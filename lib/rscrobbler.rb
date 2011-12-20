@@ -27,6 +27,9 @@ module LastFM
   HOST = 'ws.audioscrobbler.com'
   POST_URI = URI.parse("http://#{HOST}/2.0/")
 
+  class RequestError < StandardError; end
+  class AuthenticationError < StandardError; end
+
   class << self
 
     attr_accessor :api_key, :api_secret, :username, :auth_token
@@ -39,9 +42,9 @@ module LastFM
     # @return [String] session key provided from authentication
     def authenticate!
       %w[api_key api_secret username auth_token].each do |cred|
-        raise AuthenticationError, "Missing authentication credential: #{cred}" unless LastFM.send(cred)
+        raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      @session_key ||= Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
+      @session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
@@ -103,7 +106,7 @@ module LastFM
     # @raise [LastFMError] if an error is found
     # @private
     def check_status( xml )
-      raise LastFMError, xml.find_first('error').content if xml.root.attributes['status'] == 'failed'
+      raise RequestError, xml.find_first('error').content if xml.root.attributes['status'] == 'failed'
       xml
     end
 
@@ -156,6 +159,3 @@ module LastFM
 
   end
 end
-
-class LastFMError < StandardError; end
-class AuthenticationError < StandardError; end
