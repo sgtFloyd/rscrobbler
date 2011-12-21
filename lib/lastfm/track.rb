@@ -82,9 +82,17 @@ module LastFM
       end
 
       # @see http://www.last.fm/api/show?service=443
-      def scrobble( tracks, artists, timestamps, albums = nil, album_artists = nil, contexts = nil, stream_ids = nil, track_numbers = nil, mbids = nil, durations = nil )
+      def scrobble( tracks, artists, timestamps, albums = nil, album_artists = nil, contexts = nil, stream_ids = nil, track_numbers = nil, mbids = nil, durations = nil, chosen_by_users = nil )
         LastFM.requires_authentication
-        # Requires complicated logic & HTTP POST
+        params = {}
+        %w[tracks artists timestamps albums album_artists contexts stream_ids track_numbers mbids durations chosen_by_users].each{|var|
+          camel_var = var.chomp('s').split('_').map{|a| a.capitalize}.join
+          camel_var = camel_var[0, 1].downcase + camel_var[1..-1]
+          Array(eval(var)).each_with_index{|val, i|
+            params["#{camel_var}[#{i}]"] = val
+          }
+        }
+        LastFM.post( "#{TYPE}.scrobble", params )
       end
 
       # @see http://www.last.fm/api/show?service=286
