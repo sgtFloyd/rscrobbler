@@ -19,6 +19,6 @@ Configure the library with your LastFM credentials:
 
 Once authenticated, call API methods using the following syntax:
 
-```LastFM::Track.scrobble('Bonfire', 'Childish Gambino', 'Camp')```
+```LastFM::Track.scrobble('Bonfire', 'Childish Gambino', Time.now.to_i)```
 
 See documentation for detailed parameter information.
