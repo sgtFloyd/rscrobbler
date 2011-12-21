@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.authors     = ["Gabe Smith"]
   s.email       = ["sgt.floydpepper@gmail.com"]
-  s.date        = "2011-10-25"
+  s.date        = Time.now.strftime "%Y-%m-%d"
   s.homepage    = "https://github.com/sgtFloyd/rscrobbler"
   s.description = "rscrobbler is a Ruby gem for accessing Last.fm's API (http://www.last.fm/api)."
 
