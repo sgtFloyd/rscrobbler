@@ -41,7 +41,7 @@ module LastFM
     # @see http://www.last.fm/api/authspec last.fm auth spec
     # @return [String] session key provided from authentication
     def authenticate!
-      %w[api_key api_secret username auth_token].each do |cred|
+      [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
       @session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content

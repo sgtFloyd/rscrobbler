@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'rscrobbler'
+
+begin
+  print "Last.fm username: "
+  LastFM.username = STDIN.gets.strip
+
+  print "Last.fm password: "
+  system "stty -echo"
+  puts "\nYour Last.fm auth token: #{LastFM.generate_auth_token(STDIN.gets.strip)}"
+  system "stty echo"
+rescue NoMethodError, Interrupt
+  system "stty echo"
+  exit
+end
