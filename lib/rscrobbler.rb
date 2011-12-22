@@ -22,7 +22,7 @@ require 'lastfm/user'
 require 'lastfm/venue'
 
 module LastFM
-  VERSION = '0.0.5'
+  VERSION = '0.0.6'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
@@ -33,6 +33,26 @@ module LastFM
   class << self
     attr_accessor :api_key, :api_secret, :username, :auth_token, :session_key, :logger
 
+    # Configure the module and begin a session. Once established (and successfully
+    # executed), the module is ready to send api calls to Last.fm.
+    #
+    # Expected usage:
+    #     LastFM.establish_session do |session|
+    #       session.username = ...
+    #       session.auth_token = ...
+    #       session.api_key = ...
+    #       session.api_secret = ...
+    #     end
+    #
+    # @param [Block] &block  block used to configure the module's attributes
+    # @return [String] session key if successfully connected
+    # @raise [AuthenticationError] if any authentication attributes are missing
+    # @raise [LastFMError] if the HTTP request to Last.fm returns an error
+    def establish_session(&block)
+      yield self
+      self.authenticate!
+    end
+
     # Authenticate the service with provided login credentials. Use mobile
     # authentication to avoid redirecting to the website to log in.
     #
@@ -42,7 +62,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
+      self.session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
@@ -136,7 +156,7 @@ module LastFM
     # @private
     def generate_path( method, secure, params={} )
       params = construct_params( method, secure, params )
-      url = "/2.0/?method=#{params.delete('method')}"
+      url = "/#{API_VERSION}/?method=#{params.delete('method')}"
       params.keys.each do |key|
         url << "&#{key}=#{params[key]}"
       end
