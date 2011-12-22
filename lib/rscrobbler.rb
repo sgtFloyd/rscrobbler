@@ -22,18 +22,16 @@ require 'lastfm/user'
 require 'lastfm/venue'
 
 module LastFM
-  VERSION = '0.0.4'
+  VERSION = '0.0.5'
 
   HOST = 'ws.audioscrobbler.com'
-  POST_URI = URI.parse("http://#{HOST}/2.0/")
+  API_VERSION = '2.0'
 
-  class RequestError < StandardError; end
+  class LastFMError < StandardError; end
   class AuthenticationError < StandardError; end
 
   class << self
-
-    attr_accessor :api_key, :api_secret, :username, :auth_token
-    attr_reader   :session_key, :logger
+    attr_accessor :api_key, :api_secret, :username, :auth_token, :session_key, :logger
 
     # Authenticate the service with provided login credentials. Use mobile
     # authentication to avoid redirecting to the website to log in.
@@ -44,7 +42,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      @session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
+      session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
@@ -81,7 +79,7 @@ module LastFM
       path = generate_path(method, secure, params)
       logger.debug( "Last.fm HTTP GET: #{HOST+path}" ) if logger
       response = Net::HTTP.get_response( HOST, path )
-      check_status( LibXML::XML::Parser.string( response.body ).parse )
+      validate( LibXML::XML::Parser.string( response.body ).parse )
     end
 
     # Construct an HTTP POST call from params, and check the response status.
@@ -91,10 +89,11 @@ module LastFM
     # @return [LibXML::XML::Document] xml document of the data contained in the response
     # @raise [LastFMError] if the request fails
     def post( method, params )
+      post_uri = URI.parse("http://#{HOST}/#{API_VERSION}/")
       params = construct_params( method, :secure, params )
-      logger.debug( "Last.fm HTTP POST: #{POST_URI}, #{params.to_s}" ) if logger
-      response = Net::HTTP.post_form( POST_URI, params )
-      check_status( LibXML::XML::Parser.string( response.body ).parse )
+      logger.debug( "Last.fm HTTP POST: #{post_uri}, #{params.to_s}" ) if logger
+      response = Net::HTTP.post_form( post_uri, params )
+      validate( LibXML::XML::Parser.string( response.body ).parse )
     end
 
   private
@@ -105,8 +104,8 @@ module LastFM
     # @return [LibXML::XML::Document] the xml document if no errors were found
     # @raise [LastFMError] if an error is found
     # @private
-    def check_status( xml )
-      raise RequestError, xml.find_first('error').content if xml.root.attributes['status'] == 'failed'
+    def validate( xml )
+      raise LastFMError, xml.find_first('error').content if xml.root.attributes['status'] == 'failed'
       xml
     end
 
@@ -117,6 +116,7 @@ module LastFM
     # @param [Boolean] secure  whether to include session key and api signature in the parameters
     # @param [Hash] params  parameters to normalize and add to
     # @return [Hash] complete, normalized parameters
+    # @private
     def construct_params( method, secure, params )
       params.delete_if{|k,v| v.nil? }
       params.each{|k,v| params[k] = params[k].to_s }
