@@ -15,15 +15,15 @@ Generate your Last.fm auth token:
 Configure the library with your LastFM credentials:
 
     include 'rscrobbler'
-    LastFM.api_key    = (see: www.last.fm/api/account)
-    LastFM.api_secret = (see: www.last.fm/api/account)
-    LastFM.username   = (last.fm username)
-    LastFM.auth_token = (generated auth token)
-    LastFM.authenticate!
-*Authentication process will be simplified in a later version.*
+    LastFM.establish_session do |session|
+      session.api_key    = (see: www.last.fm/api/account)
+      session.api_secret = (see: www.last.fm/api/account)
+      session.username   = (last.fm username)
+      session.auth_token = (generated auth token)
+    end
 
 Once authenticated, call API methods using the following syntax:
 
 ```LastFM::Track.scrobble('Bonfire', 'Childish Gambino', Time.now.to_i)```
 
-See documentation for detailed parameter information.
+See [documentation](http://rubydoc.info/gems/rscrobbler) for detailed parameter information.
