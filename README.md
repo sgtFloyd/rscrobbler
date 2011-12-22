@@ -26,4 +26,4 @@ Once authenticated, call API methods using the following syntax:
 
 ```LastFM::Track.scrobble('Bonfire', 'Childish Gambino', Time.now.to_i)```
 
-See documentation for detailed parameter information.
+See [documentation](http://rubydoc.info/gems/rscrobbler) for detailed parameter information.
