@@ -129,8 +129,9 @@ module LastFM
       xml
     end
 
-    # Normalize the parameter list by converting values to a string and removing any nils. Add method,
-    # api key, session key, and api signature parameters where necessary.
+    # Normalize the parameter list by converting values to a string, removing any nil values,
+    # and camel-casing the parameter keys. Add method, api key, session key, and api signature
+    # parameters where necessary.
     #
     # @param [String] method  last.fm api method
     # @param [Boolean] secure  whether to include session key and api signature in the parameters
@@ -138,13 +139,19 @@ module LastFM
     # @return [Hash] complete, normalized parameters
     # @private
     def construct_params( method, secure, params )
-      params.delete_if{|k,v| v.nil? }
-      params.each{|k,v| params[k] = params[k].to_s }
+      params = params.each_with_object({}) do |(k,v), h|
+        h[camel_case(k)] = v.to_s unless v.nil?
+      end
       params['method'] = method
       params['api_key'] = api_key
       params['sk'] = session_key if authenticated? && secure
       params['api_sig'] = generate_method_signature( params ) if secure
       params
+    end
+
+    def camel_case(str)
+      camel = str.to_s.split('_').map{|s| s.capitalize}.join
+      camel[0, 1].downcase + camel[1..-1]
     end
 
     # Generate the path for a particular method call given params.

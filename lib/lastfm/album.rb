@@ -4,15 +4,24 @@ module LastFM
 
       TYPE = 'album'
 
+      # @option params [String, required] :artist the artist name
+      # @option params [String, required] :album  the album name
+      # @option params [Array, required]  :tags   up to 10 tags to apply to this album
       # @see http://www.last.fm/api/show?service=302
-      def add_tags( artist, album, tags )
+      def add_tags( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.addTags", 'artist'=>artist, 'album'=>album, 'tags'=>tags )
+        params[:tags] = params[:tags].compact.join(',') unless params[:tags].nil?
+        LastFM.post( "#{TYPE}.addTags", params )
       end
 
+      # @option params [String, required unless :mbid] :artist  the artist name
+      # @option params [String, required unless :mbid] :album   the album name
+      # @option params [String, optional]              :mbid    the musicbrainz id for the album
+      # @option params [Boolean, optional]             :autocorrect (False) transform misspelled artist names into correct artist names to be returned in the response
+      # @option params [String, optional]              :country a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
-      def get_buylinks( country, artist = nil, album = nil, mbid = nil, autocorrect = nil )
-        raise ArgumentError unless artist && album || mbid
+      def get_buylinks( params )
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
         LastFM.get( "#{TYPE}.getBuylinks", !:secure, 'country'=>country, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'autocorrect'=>autocorrect  )
       end
 
