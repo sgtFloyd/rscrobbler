@@ -149,6 +149,11 @@ module LastFM
       params
     end
 
+    # Return a the camelCased version of the given string or symbol, with underscores removed,
+    # word capitalized, and the first letter lower case.
+    #
+    # @param [String] str  the string (or symbol) to camel case
+    # @return [String] the camelcased version of the given string
     def camel_case(str)
       camel = str.to_s.split('_').map{|s| s.capitalize}.join
       camel[0, 1].downcase + camel[1..-1]

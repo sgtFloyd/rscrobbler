@@ -4,67 +4,120 @@ module LastFM
 
       TYPE = 'album'
 
+      # Tag an album using a list of user supplied tags.
+      #
       # @option params [String, required] :artist the artist name
       # @option params [String, required] :album  the album name
       # @option params [Array, required]  :tags   up to 10 tags to apply to this album
       # @see http://www.last.fm/api/show?service=302
       def add_tags( params )
         LastFM.requires_authentication
-        params[:tags] = params[:tags].compact.join(',') unless params[:tags].nil?
+        params[:tags] = Array(params[:tags]).compact.join(',') unless params[:tags].nil?
         LastFM.post( "#{TYPE}.addTags", params )
       end
 
-      # @option params [String, required unless :mbid] :artist  the artist name
-      # @option params [String, required unless :mbid] :album   the album name
-      # @option params [String, optional]              :mbid    the musicbrainz id for the album
-      # @option params [Boolean, optional]             :autocorrect (False) transform misspelled artist names into correct artist names to be returned in the response
-      # @option params [String, optional]              :country a country name, as defined by ISO 3166-1
+      # Get a list of buy links for an album.
+      #
+      # @option params [String,  required unless :mbid] :artist       the artist name
+      # @option params [String,  required unless :mbid] :album        the album name
+      # @option params [String,  optional]              :mbid         the musicbrainz id for the album
+      # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
+      # @option params [String,  optional]              :country      a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
         params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
-        LastFM.get( "#{TYPE}.getBuylinks", !:secure, 'country'=>country, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'autocorrect'=>autocorrect  )
+        LastFM.get( "#{TYPE}.getBuylinks", !:secure, params )
       end
 
+      # Get the metadata for an album.
+      #
+      # @option params [String,  required unless :mbid] :artist       the artist name
+      # @option params [String,  required unless :mbid] :album        the album name
+      # @option params [String,  optional]              :mbid         the musicbrainz id for the album
+      # @option params [String,  optional]              :lang         the language to return the biography in, expressed as an ISO 639 alpha-2 code
+      # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
+      # @option params [String,  optional]              :username     username whose playcount for this album is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=290
-      def get_info( artist = nil, album = nil, mbid = nil, lang = nil, autocorrect = nil, username = nil )
-        raise ArgumentError unless artist && album || mbid
-        LastFM.get( "#{TYPE}.getInfo", !:secure, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'lang'=>lang, 'autocorrect'=>autocorrect, 'username'=>username )
+      def get_info( params )
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
       end
 
+      # Get shouts for an album.
+      #
+      # @option params [String,  required unless :mbid] :artist       the artist name
+      # @option params [String,  required unless :mbid] :album        the album name
+      # @option params [String,  optional]              :mbid         the musicbrainz id for the album
+      # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
+      # @option params [Fixnum,  optional]              :page         the page number to fetch. defaults to first page
+      # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=450
-      def get_shouts( artist = nil, album = nil, mbid = nil, autocorrect = nil, limit = nil, page = nil )
-        raise ArgumentError unless artist && album || mbid
-        LastFM.get( "#{TYPE}.getShouts", !:secure, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'autocorrect'=>autocorrect, 'limit'=>limit, 'page'=>page )
+      def get_shouts( params )
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        LastFM.get( "#{TYPE}.getShouts", !:secure, params )
       end
 
+      # Get the tags applied by an individual user to an album.
+      #
+      # @option params [String,  required unless :mbid] :artist       the artist name
+      # @option params [String,  required unless :mbid] :album        the album name
+      # @option params [String,  optional]              :mbid         the musicbrainz id for the album
+      # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
+      # @option params [String,  optional]              :user         if called in non-authenticated mode you must specify the user to look up
       # @see http://www.last.fm/api/show?service=317
-      def get_tags( artist = nil, album = nil, mbid = nil, autocorrect = nil )
-        raise ArgumentError unless artist && album || mbid
+      def get_tags( params )
         LastFM.requires_authentication
-        LastFM.get( "#{TYPE}.getTags", :secure, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'autocorrect'=>autocorrect )
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        secure = !params[:user]
+        LastFM.get( "#{TYPE}.getTags", secure, params )
       end
 
+      # Get the top tags for an album, ordered by popularity.
+      #
+      # @option params [String,  required unless :mbid] :artist       the artist name
+      # @option params [String,  required unless :mbid] :album        the album name
+      # @option params [String,  optional]              :mbid         the musicbrainz id for the album
+      # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show?service=438
-      def get_top_tags( artist = nil, album = nil, mbid = nil, autocorrect = nil )
-        raise ArgumentError unless artist && album || mbid
-        LastFM.get( "#{TYPE}.getTopTags", !:secure, 'artist'=>artist, 'album'=>album, 'mbid'=>mbid, 'autocorrect'=>autocorrect )
+      def get_top_tags( params )
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        LastFM.get( "#{TYPE}.getTopTags", !:secure, params )
       end
 
+      # Remove a user's tag from an album.
+      #
+      # @option params [String, required] :artist the artist name
+      # @option params [String, required] :album  the album name
+      # @option params [String, required] :tag    a single user tag to remove from this album
       # @see http://www.last.fm/api/show?service=314
-      def remove_tag( artist, album, tag )
+      def remove_tag( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.removeTag", 'artist'=>artist, 'album'=>album, 'tag'=>tag )
+        LastFM.post( "#{TYPE}.removeTag", params )
       end
 
+      # Search for an album by name. Returns album matches sorted by relevance.
+      #
+      # @option params [String, required] :album  the album name
+      # @option params [Fixnum, optional] :page   the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit  the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=357
-      def search( album, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.search", !:secure, 'album'=>album, 'limit'=>limit, 'page'=>page )
+      def search( params )
+        LastFM.get( "#{TYPE}.search", !:secure, params )
       end
 
+      # Share an album with one or more Last.fm users or other friends.
+      #
+      # @option params [String,  required] :artist    the artist name
+      # @option params [String,  required] :album     the album name
+      # @option params [Array,   required] :recipient a list of email addresses or Last.fm usernames. Maximum is 10
+      # @option params [String], optional] :message   an optional message to send. if not supplied a default message will be used
+      # @option params [Boolean, optional] :public    optionally show in the sharing users activity feed. defaults to false
       # @see http://www.last.fm/api/show?service=436
-      def share( artist, album, recipient, message = nil, public = nil )
+      def share( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.share", 'artist'=>artist, 'album'=>album, 'recipient'=>recipient, 'message'=>message, 'public'=>public )
+        params[:recipient] = Array(params[:recipient]).compact.join(',') unless params[:recipient].nil?
+        params[:public] = (params[:public] ? 1 : 0) unless params[:public].nil?
+        LastFM.post( "#{TYPE}.share", params )
       end
 
     end
