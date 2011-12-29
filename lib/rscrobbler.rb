@@ -62,7 +62,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      self.session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
+      self.session_key = Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
