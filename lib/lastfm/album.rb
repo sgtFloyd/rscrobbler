@@ -12,7 +12,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=302
       def add_tags( params )
         LastFM.requires_authentication
-        params[:tags] = Array(params[:tags]).compact.join(',') unless params[:tags].nil?
+        params[:tags] = Array(params[:tags]).compact.join(',') if params.include?(:tags)
         LastFM.post( "#{TYPE}.addTags", params )
       end
 
@@ -25,7 +25,7 @@ module LastFM
       # @option params [String,  optional]              :country      a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
-        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
         LastFM.get( "#{TYPE}.getBuylinks", !:secure, params )
       end
 
@@ -39,7 +39,7 @@ module LastFM
       # @option params [String,  optional]              :username     username whose playcount for this album is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
         LastFM.get( "#{TYPE}.getInfo", !:secure, params )
       end
 
@@ -53,7 +53,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=450
       def get_shouts( params )
-        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
         LastFM.get( "#{TYPE}.getShouts", !:secure, params )
       end
 
@@ -67,7 +67,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=317
       def get_tags( params )
         LastFM.requires_authentication
-        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
         secure = !params[:user]
         LastFM.get( "#{TYPE}.getTags", secure, params )
       end
@@ -80,7 +80,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show?service=438
       def get_top_tags( params )
-        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) unless params[:autocorrect].nil?
+        params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
         LastFM.get( "#{TYPE}.getTopTags", !:secure, params )
       end
 
@@ -115,8 +115,8 @@ module LastFM
       # @see http://www.last.fm/api/show?service=436
       def share( params )
         LastFM.requires_authentication
-        params[:recipient] = Array(params[:recipient]).compact.join(',') unless params[:recipient].nil?
-        params[:public] = (params[:public] ? 1 : 0) unless params[:public].nil?
+        params[:recipient] = Array(params[:recipient]).compact.join(',') if params.include?(:recipient)
+        params[:public] = (params[:public] ? 1 : 0) if params.include?(:public)
         LastFM.post( "#{TYPE}.share", params )
       end
 
