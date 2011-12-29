@@ -90,7 +90,7 @@ module LastFM
     # Construct an HTTP GET call from params, and load the response into a LibXML Document.
     #
     # @param [String] method  last.fm api method to call
-    # @param [optional, Boolean] secure  whether sign the request with a method signature and session key
+    # @param [Boolean] secure  whether to sign the request with a method signature and session key
     #   (one exception being auth methods, which require a method signature but no session key)
     # @param [Hash] params  parameters to send, excluding method, api_key, api_sig, and sk
     # @return [LibXML::XML::Document] xml document of the data contained in the response

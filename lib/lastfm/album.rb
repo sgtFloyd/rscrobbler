@@ -68,7 +68,7 @@ module LastFM
       def get_tags( params )
         LastFM.requires_authentication
         params[:autocorrect] = (params[:autocorrect] ? 1 : 0) if params.include?(:autocorrect)
-        secure = !params[:user]
+        secure = params.include?(:user)
         LastFM.get( "#{TYPE}.getTags", secure, params )
       end
 
@@ -109,8 +109,8 @@ module LastFM
       #
       # @option params [String,  required] :artist    the artist name
       # @option params [String,  required] :album     the album name
-      # @option params [Array,   required] :recipient a list of email addresses or Last.fm usernames. Maximum is 10
-      # @option params [String], optional] :message   an optional message to send. if not supplied a default message will be used
+      # @option params [Array,   required] :recipient a list of email addresses or Last.fm usernames. maximum is 10
+      # @option params [String,  optional] :message   an optional message to send. if not supplied a default message will be used
       # @option params [Boolean, optional] :public    optionally show in the sharing users activity feed. defaults to false
       # @see http://www.last.fm/api/show?service=436
       def share( params )
