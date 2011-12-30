@@ -23,7 +23,7 @@ module LastFM
       # @option params [Fixnum, optional] :limit  the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=391
       def get_attendees( params )
-        LastFM.get( "#{TYPE}.getAttendees", !:secure, params )
+        LastFM.get( "#{TYPE}.getAttendees", params )
       end
 
       # Get the metadata for an event on Last.fm. Includes attendance and lineup information.
@@ -31,7 +31,7 @@ module LastFM
       # @option params [Fixnum, required] :event  numeric last.fm event id
       # @see http://www.last.fm/api/show?service=292
       def get_info( params )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
+        LastFM.get( "#{TYPE}.getInfo", params )
       end
 
       # Get shouts for an event.
@@ -41,7 +41,7 @@ module LastFM
       # @option params [Fixnum, optional] :limit  the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=399
       def get_shouts( params )
-        LastFM.get( "#{TYPE}.getShouts", !:secure, params )
+        LastFM.get( "#{TYPE}.getShouts", params )
       end
 
       # Share an event with one or more Last.fm users or other friends.

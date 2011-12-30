@@ -19,7 +19,7 @@ module LastFM
       # @option params [String, required] :artist the artist name
       # @see http://www.last.fm/api/show/?service=446
       def get_correction( params )
-        LastFM.get( "#{TYPE}.getCorrection", !:secure, params )
+        LastFM.get( "#{TYPE}.getCorrection", params )
       end
 
       # Get a list of upcoming events for this artist.
@@ -32,7 +32,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=117
       def get_events( params )
-        LastFM.get( "#{TYPE}.getEvents", !:secure, params )
+        LastFM.get( "#{TYPE}.getEvents", params )
       end
 
       # Get images for this artist in a variety of sizes
@@ -45,7 +45,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=407
       def get_images( params )
-        LastFM.get( "#{TYPE}.getImages", !:secure, params )
+        LastFM.get( "#{TYPE}.getImages", params )
       end
 
       # Get the metadata for an artist. Includes biography.
@@ -57,7 +57,7 @@ module LastFM
       # @option params [String,  optional]              :username     username whose playcount for this artist is to be returned in the reponse
       # @see http://www.last.fm/api/show/?service=267
       def get_info( params )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
+        LastFM.get( "#{TYPE}.getInfo", params )
       end
 
       # Get a paginated list of all the events this artist has played at in the past.
@@ -69,7 +69,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=428
       def get_past_events( params )
-        LastFM.get( "#{TYPE}.getPastEvents", !:secure, params )
+        LastFM.get( "#{TYPE}.getPastEvents", params )
       end
 
       # Get a podcast of free mp3s based on an artist
@@ -79,7 +79,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show/?service=118
       def get_podcast( params )
-        LastFM.get( "#{TYPE}.getPodcast", !:secure, params )
+        LastFM.get( "#{TYPE}.getPodcast", params )
       end
 
       # Get shouts for this artist.
@@ -91,7 +91,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=397
       def get_shouts( params )
-        LastFM.get( "#{TYPE}.getShouts", !:secure, params )
+        LastFM.get( "#{TYPE}.getShouts", params )
       end
 
       # Get all the artists similar to this artist.
@@ -102,7 +102,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        limit the number of results to fetch
       # @see http://www.last.fm/api/show/?service=119
       def get_similar( params )
-        LastFM.get( "#{TYPE}.getSimilar", !:secure, params )
+        LastFM.get( "#{TYPE}.getSimilar", params )
       end
 
       # Get the tags applied by an individual user to an artist on Last.fm. If accessed as an authenticated service
@@ -116,7 +116,7 @@ module LastFM
       def get_tags( params )
         LastFM.requires_authentication
         secure = params.include?(:user)
-        LastFM.get( "#{TYPE}.getTags", secure, params )
+        LastFM.get( "#{TYPE}.getTags", params, secure )
       end
 
       # Get the top albums for an artist, ordered by popularity.
@@ -128,7 +128,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=287
       def get_top_albums( params )
-        LastFM.get( "#{TYPE}.getTopAlbums", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopAlbums", params )
       end
 
       # Get the top fans for an artist on Last.fm, based on listening data.
@@ -138,7 +138,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show/?service=310
       def get_top_fans( params )
-        LastFM.get( "#{TYPE}.getTopFans", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopFans", params )
       end
 
       # Get the top tags for an artist, ordered by popularity.
@@ -148,7 +148,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show/?service=288
       def get_top_tags( params )
-        LastFM.get( "#{TYPE}.getTopTags", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopTags", params )
       end
 
       # Get the top tracks by an artist, ordered by popularity.
@@ -160,7 +160,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show/?service=277
       def get_top_tracks( params )
-        LastFM.get( "#{TYPE}.getTopTracks", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopTracks", params )
       end
 
       # Remove a user's tag from an artist.
@@ -180,7 +180,7 @@ module LastFM
       # @option params [String, required] :artist the artist name
       # @see http://www.last.fm/api/show/?service=272
       def search( params )
-        LastFM.get( "#{TYPE}.search", !:secure, params )
+        LastFM.get( "#{TYPE}.search", params )
       end
 
       # Share an artist with Last.fm users or other friends.

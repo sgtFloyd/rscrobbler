@@ -18,7 +18,7 @@ module LastFM
 
       # see: http://www.last.fm/api/show?service=271
       def fetch( params )
-        LastFM.get( "#{TYPE}.fetch", !:secure, params )
+        LastFM.get( "#{TYPE}.fetch", params )
       end
 
     end

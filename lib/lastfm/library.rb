@@ -24,17 +24,17 @@ module LastFM
 
       # see: http://www.last.fm/api/show?service=321
       def get_albums( params )
-        LastFM.get( "#{TYPE}.getAlbums", !:secure, params )
+        LastFM.get( "#{TYPE}.getAlbums", params )
       end
 
       # see: http://www.last.fm/api/show?service=322
       def get_artists( params )
-         LastFM.get( "#{TYPE}.getArtists", !:secure, params )
+         LastFM.get( "#{TYPE}.getArtists", params )
       end
 
       # see: http://www.last.fm/api/show?service=323
       def get_tracks( params )
-        LastFM.get( "#{TYPE}.getTracks", !:secure, params )
+        LastFM.get( "#{TYPE}.getTracks", params )
       end
 
       # see: http://www.last.fm/api/show?service=523

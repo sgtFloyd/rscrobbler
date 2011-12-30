@@ -95,7 +95,7 @@ module LastFM
     # @param [Hash] params  parameters to send, excluding method, api_key, api_sig, and sk
     # @return [LibXML::XML::Document] xml document of the data contained in the response
     # @raise [LastFMError] if the request fails
-    def get( method, secure = false, params = {} )
+    def get( method, params = {}, secure = false )
       path = generate_path(method, secure, params)
       logger.debug( "Last.fm HTTP GET: #{HOST+path}" ) if logger
       response = Net::HTTP.get_response( HOST, path )

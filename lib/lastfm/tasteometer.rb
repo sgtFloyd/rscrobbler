@@ -6,7 +6,7 @@ module LastFM
 
       # @see http://www.last.fm/api/show?service=258
       def compare( params )
-        LastFM.get( "#{TYPE}.compare", !:secure, params )
+        LastFM.get( "#{TYPE}.compare", params )
       end
 
     end

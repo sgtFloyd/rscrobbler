@@ -24,7 +24,7 @@ module LastFM
       # @option params [String,  optional]              :country      a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
-        LastFM.get( "#{TYPE}.getBuylinks", !:secure, params )
+        LastFM.get( "#{TYPE}.getBuylinks", params )
       end
 
       # Get the metadata for an album.
@@ -37,7 +37,7 @@ module LastFM
       # @option params [String,  optional]              :username     username whose playcount for this album is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
+        LastFM.get( "#{TYPE}.getInfo", params )
       end
 
       # Get shouts for an album.
@@ -50,7 +50,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit        the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=450
       def get_shouts( params )
-        LastFM.get( "#{TYPE}.getShouts", !:secure, params )
+        LastFM.get( "#{TYPE}.getShouts", params )
       end
 
       # Get the tags applied by an individual user to an album.
@@ -64,7 +64,7 @@ module LastFM
       def get_tags( params )
         LastFM.requires_authentication
         secure = params.include?(:user)
-        LastFM.get( "#{TYPE}.getTags", secure, params )
+        LastFM.get( "#{TYPE}.getTags", params, secure )
       end
 
       # Get the top tags for an album, ordered by popularity.
@@ -75,7 +75,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect  transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show?service=438
       def get_top_tags( params )
-        LastFM.get( "#{TYPE}.getTopTags", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopTags", params )
       end
 
       # Remove a user's tag from an album.
@@ -96,7 +96,7 @@ module LastFM
       # @option params [Fixnum, optional] :limit  the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=357
       def search( params )
-        LastFM.get( "#{TYPE}.search", !:secure, params )
+        LastFM.get( "#{TYPE}.search", params )
       end
 
       # Share an album with one or more Last.fm users or other friends.

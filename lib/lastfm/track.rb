@@ -18,32 +18,32 @@ module LastFM
 
       # @see http://www.last.fm/api/show?service=431
       def get_buylinks( params )
-        LastFM.get( "#{TYPE}.getBuylinks", !:secure, params )
+        LastFM.get( "#{TYPE}.getBuylinks", params )
       end
 
       # @see http://www.last.fm/api/show?service=447
       def get_correction( params )
-        LastFM.get( "#{TYPE}.getCorrection", !:secure, params )
+        LastFM.get( "#{TYPE}.getCorrection", params )
       end
 
       # @see http://www.last.fm/api/show?service=441
       def get_fingerprint_metadata( params )
-        LastFM.get( "#{TYPE}.getFingerPrintMetadata", !:secure, params )
+        LastFM.get( "#{TYPE}.getFingerPrintMetadata", params )
       end
 
       # @see http://www.last.fm/api/show?service=356
       def get_info( params )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
+        LastFM.get( "#{TYPE}.getInfo", params )
       end
 
       # @see http://www.last.fm/api/show?service=453
       def get_shouts( params )
-        LastFM.get( "#{TYPE}.getShouts", !:secure, params )
+        LastFM.get( "#{TYPE}.getShouts", params )
       end
 
       # @see http://www.last.fm/api/show?service=319
       def get_similar( params )
-        LastFM.get( "#{TYPE}.getSimilar", !:secure, params )
+        LastFM.get( "#{TYPE}.getSimilar", params )
       end
 
       # @see http://www.last.fm/api/show?service=320
@@ -54,12 +54,12 @@ module LastFM
 
       # @see http://www.last.fm/api/show?service=312
       def get_top_fans( params )
-        LastFM.get( "#{TYPE}.getTopFans", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopFans", params )
       end
 
       # @see http://www.last.fm/api/show?service=289
       def get_top_tags( params )
-        LastFM.get( "#{TYPE}.getTopTags", !:secure, params )
+        LastFM.get( "#{TYPE}.getTopTags", params )
       end
 
       # @see http://www.last.fm/api/show?service=260
@@ -82,7 +82,7 @@ module LastFM
 
       # @see http://www.last.fm/api/show?service=286
       def search( params )
-        LastFM.get( "#{TYPE}.search", !:secure, params )
+        LastFM.get( "#{TYPE}.search", params )
       end
 
       # @see http://www.last.fm/api/show?service=305
