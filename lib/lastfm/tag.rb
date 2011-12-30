@@ -5,48 +5,48 @@ module LastFM
       TYPE = 'tag'
 
       # @see http://www.last.fm/api/show?service=452
-      def get_info( tag, lang = nil )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, 'tag'=>tag, 'lang'=>lang )
+      def get_info( params )
+        LastFM.get( "#{TYPE}.getInfo", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=311
-      def get_similar( tag )
-        LastFM.get( "#{TYPE}.getSimilar", !:secure, 'tag'=>tag )
+      def get_similar( params )
+        LastFM.get( "#{TYPE}.getSimilar", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=283
-      def get_top_albums( tag, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopAlbums", !:secure, 'tag'=>tag, 'limit'=>limit, 'page'=>page )
+      def get_top_albums( params )
+        LastFM.get( "#{TYPE}.getTopAlbums", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=284
-      def get_top_artists( tag, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopArtists", !:secure, 'tag'=>tag, 'limit'=>limit, 'page'=>page )
+      def get_top_artists( params )
+        LastFM.get( "#{TYPE}.getTopArtists", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=276
       def get_top_tags
-        LastFM.get( "#{TYPE}.getTopTags", !:secure  )
+        LastFM.get( "#{TYPE}.getTopTags", !:secure )
       end
 
       # @see http://www.last.fm/api/show?service=285
-      def get_top_tracks( tag, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopTracks", !:secure, 'tag'=>tag, 'limit'=>limit, 'page'=>page )
+      def get_top_tracks( params )
+        LastFM.get( "#{TYPE}.getTopTracks", params )
       end
 
       # @see http://www.last.fm/api/show?service=358
-      def get_weekly_artist_chart( tag, time_from = nil, time_to = nil, limit = nil )
-        LastFM.get( "#{TYPE}.getWeeklyArtistChart", !:secure, 'tag'=>tag, 'from'=>time_from, 'to'=>time_to, 'limit'=>limit )
+      def get_weekly_artist_chart( params )
+        LastFM.get( "#{TYPE}.getWeeklyArtistChart", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=359
-      def get_weekly_chart_list( tag )
-        LastFM.get( "#{TYPE}.getWeeklyChartList", !:secure, 'tag'=>tag )
+      def get_weekly_chart_list( params )
+        LastFM.get( "#{TYPE}.getWeeklyChartList", !:secure, params )
       end
 
       # @see http://www.last.fm/api/show?service=273
-      def search( tag, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.search", !:secure, 'tag'=>tag, 'limit'=>limit, 'page'=>page )
+      def search( params )
+        LastFM.get( "#{TYPE}.search", !:secure, params )
       end
 
     end

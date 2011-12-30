@@ -5,20 +5,20 @@ module LastFM
       TYPE = 'playlist'
 
       # see: http://www.last.fm/api/show?service=337
-      def add_track( playlist_id, artist, track )
+      def add_track( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.addTrack", 'playlistID'=>playlist_id, 'artist'=>artist, 'track'=>track )
+        LastFM.post( "#{TYPE}.addTrack", params )
       end
 
       # see: http://www.last.fm/api/show?service=365
-      def create( title = nil, description = nil )
+      def create( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.create", 'title'=>title, 'description'=>description )
+        LastFM.post( "#{TYPE}.create", params )
       end
 
       # see: http://www.last.fm/api/show?service=271
-      def fetch( playlist_url )
-        LastFM.get( "#{TYPE}.fetch", !:secure, 'playlistURL'=>playlist_url )
+      def fetch( params )
+        LastFM.get( "#{TYPE}.fetch", !:secure, params )
       end
 
     end

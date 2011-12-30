@@ -59,6 +59,7 @@ module LastFM
       end
 
       # Shout in an event's shoutbox.
+      #
       # @option params [Fixnum, required] :event    numeric last.fm event id
       # @option params [String, required] :message  message to post to the shoutbox
       # @see http://www.last.fm/api/show?service=409
