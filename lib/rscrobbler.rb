@@ -22,7 +22,7 @@ require 'lastfm/user'
 require 'lastfm/venue'
 
 module LastFM
-  VERSION = '0.0.6'
+  VERSION = '0.1.0'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
