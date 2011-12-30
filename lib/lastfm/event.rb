@@ -53,8 +53,6 @@ module LastFM
       # @see http://www.last.fm/api/show?service=350
       def share( params )
         LastFM.requires_authentication
-        params[:recipient] = Array(params[:recipient]).compact.join(',') if params.include?(:recipient)
-        params[:public] = (params[:public] ? 1 : 0) if params.include?(:public)
         LastFM.post( "#{TYPE}.share", params )
       end
 

@@ -129,8 +129,9 @@ module LastFM
       xml
     end
 
-    # Normalize the parameter list by converting values to a string, removing any nil values,
-    # and camel-casing the parameter keys. Add method, api key, session key, and api signature
+    # Normalize the parameter list by converting boolean values to 0 or 1, array values to
+    # comma-separated strings, and all other values to a string. Remove any nil values, and
+    # camel-case the parameter keys. Add method, api key, session key, and api signature
     # parameters where necessary.
     #
     # @param [String] method  last.fm api method
@@ -139,7 +140,9 @@ module LastFM
     # @return [Hash] complete, normalized parameters
     # @private
     def construct_params( method, secure, params )
-      params = params.each_with_object({}) do |(k,v), h|
+      params = params.each_with_object({}) do |(k,v), h|        
+        v = v ? 1 : 0 if !!v == v                 # convert booleans into 0 or 1
+        v = v.compact.join(',') if v.is_a?(Array) # convert arrays into comma-separated strings
         h[camel_case(k)] = v.to_s unless v.nil?
       end
       params['method'] = method
@@ -155,6 +158,7 @@ module LastFM
     # @param [String] str  the string (or symbol) to camel case
     # @return [String] the camelcased version of the given string
     def camel_case(str)
+      # TODO: Handle special cases, playlistID, playlistURL, etc.
       camel = str.to_s.split('_').map{|s| s.capitalize}.join
       camel[0, 1].downcase + camel[1..-1]
     end
