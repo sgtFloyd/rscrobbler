@@ -62,8 +62,8 @@ module LastFM
       # @option params [String,  optional]              :user         if called in non-authenticated mode you must specify the user to look up
       # @see http://www.last.fm/api/show?service=317
       def get_tags( params )
-        LastFM.requires_authentication
-        secure = params.include?(:user)
+        secure = !params.include?(:user)
+        LastFM.requires_authentication if secure
         LastFM.get( "#{TYPE}.getTags", params, secure )
       end
 

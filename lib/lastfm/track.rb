@@ -48,7 +48,8 @@ module LastFM
 
       # @see http://www.last.fm/api/show?service=320
       def get_tags( params )
-        LastFM.requires_authentication
+        secure = !params.include?(:user)
+        LastFM.requires_authentication if secure
         LastFM.post( "#{TYPE}.getTags", params )
       end
 
