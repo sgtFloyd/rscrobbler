@@ -25,6 +25,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=421
       def get_metro_artist_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroArtistChart", params )
       end
 
@@ -36,6 +37,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=420
       def get_metro_hype_artist_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroHypeArtistChart", params )
       end
 
@@ -47,6 +49,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=422
       def get_metro_hype_track_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroHypeTrackChart", params )
       end
 
@@ -58,6 +61,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=423
       def get_metro_track_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroTrackChart", params )
       end
 
@@ -69,6 +73,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=424
       def get_metro_unique_artist_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroUniqueArtistChart", params )
       end
 
@@ -80,6 +85,7 @@ module LastFM
       # @option params [String, optional] :end        ending timestamp of the weekly range requested (see: Geo.get_weekly_chart_list)
       # @see http://www.last.fm/api/show?service=425
       def get_metro_unique_track_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getMetroUniqueTrackChart", params )
       end
 

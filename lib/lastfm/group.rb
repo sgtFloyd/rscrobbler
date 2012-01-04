@@ -30,6 +30,7 @@ module LastFM
       # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=293
       def get_weekly_album_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyAlbumChart", params )
       end
 
@@ -41,6 +42,7 @@ module LastFM
       # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=294
       def get_weekly_artist_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyArtistChart", params )
       end
 
@@ -61,6 +63,7 @@ module LastFM
       # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=296
       def get_weekly_track_chart( params )
+        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyTrackChart", params )
       end
 
