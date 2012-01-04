@@ -30,7 +30,7 @@ module LastFM
       # @option params [String,  required] :playlist_url    lastfm protocol playlist url (lastfm://playlist/...)
       # @option params [Boolean, optional] :steaming        whether to return mp3 links for song previews
       # @see: http://www.last.fm/api/show?service=271
-      # @deprecated documentation removed from last.fm/api, no longer works
+      # @deprecated documentation removed from last.fm/api, but method calls still work
       def fetch( params )
         LastFM.get( "#{TYPE}.fetch", params )
       end

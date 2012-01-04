@@ -36,7 +36,7 @@ module LastFM
     # Configure the module and begin a session. Once established (and successfully
     # executed), the module is ready to send api calls to Last.fm.
     #
-    # Expected usage:
+    # @example
     #     LastFM.establish_session do |session|
     #       session.username = ...
     #       session.auth_token = ...
@@ -140,12 +140,10 @@ module LastFM
     # @return [Hash] complete, normalized parameters
     # @private
     def construct_params( method, secure, params )
-      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL'}
       params = params.each_with_object({}) do |(k,v), h|
         v = v ? 1 : 0 if !!v == v                 # convert booleans into 0 or 1
         v = v.compact.join(',') if v.is_a?(Array) # convert arrays into comma-separated strings
-        k = exceptions.include?(k) ? exceptions[k] : camel_case(k)
-        h[k] = v.to_s unless v.nil?
+        h[camel_case(k)] = v.to_s unless v.nil?
       end
       params['method'] = method
       params['api_key'] = api_key
@@ -159,10 +157,11 @@ module LastFM
     #
     # @param [String] str  the string (or symbol) to camel case
     # @return [String] the camelcased version of the given string
-    def camel_case(str)
-      # TODO: Handle special cases, playlistID, playlistURL, etc.
-      camel = str.to_s.split('_').map{|s| s.capitalize}.join
-      camel[0, 1].downcase + camel[1..-1]
+    def camel_case(key)
+      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL'}
+      return exceptions[key] if exceptions.include?(key)
+      camel = key.to_s.split('_').map{|s| s.capitalize}.join
+      camel[0].downcase + camel[1..-1]
     end
 
     # Generate the path for a particular method call given params.
