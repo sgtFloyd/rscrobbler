@@ -140,10 +140,12 @@ module LastFM
     # @return [Hash] complete, normalized parameters
     # @private
     def construct_params( method, secure, params )
-      params = params.each_with_object({}) do |(k,v), h|        
+      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL'}
+      params = params.each_with_object({}) do |(k,v), h|
         v = v ? 1 : 0 if !!v == v                 # convert booleans into 0 or 1
         v = v.compact.join(',') if v.is_a?(Array) # convert arrays into comma-separated strings
-        h[camel_case(k)] = v.to_s unless v.nil?
+        k = exceptions.include?(k) ? exceptions[k] : camel_case(k)
+        h[k] = v.to_s unless v.nil?
       end
       params['method'] = method
       params['api_key'] = api_key
