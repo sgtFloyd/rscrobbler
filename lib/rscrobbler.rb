@@ -97,7 +97,7 @@ module LastFM
     # @raise [LastFMError] if the request fails
     def get( method, params = {}, secure = false )
       path = generate_path(method, secure, params)
-      logger.debug( "Last.fm HTTP GET: #{HOST+path}" ) if logger
+      logger.debug( "Last.fm HTTP GET: #{HOST}#{path}" ) if logger
       response = Net::HTTP.get_response( HOST, path )
       validate( LibXML::XML::Parser.string( response.body ).parse )
     end
@@ -158,7 +158,7 @@ module LastFM
     # @param [String] str  the string (or symbol) to camel case
     # @return [String] the camelcased version of the given string
     def camel_case(key)
-      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL'}
+      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL', speed_multiplier: 'speed_multiplier'}
       return exceptions[key] if exceptions.include?(key)
       camel = key.to_s.split('_').map{|s| s.capitalize}.join
       camel[0].downcase + camel[1..-1]
