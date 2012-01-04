@@ -6,17 +6,17 @@ module LastFM
 
       # Tag an artist with one or more user supplied tags.
       #
-      # @option params [String, required] :artist the artist name
-      # @option params [Array, required]  :tags   up to 10 tags to apply to this artist
+      # @option params [String, required] :artist   the artist name
+      # @option params [Array, required]  :tags     up to 10 tags to apply to this artist
       # @see http://www.last.fm/api/show/?service=303
       def add_tags( params )
         LastFM.requires_authentication
         LastFM.post( "#{TYPE}.addTags", params )
       end
 
-      # Check whether the supplied artist has a correction to a canonical artist
+      # Check whether the supplied artist has a correction to a canonical artist.
       #
-      # @option params [String, required] :artist the artist name
+      # @option params [String, required] :artist   the artist name
       # @see http://www.last.fm/api/show/?service=446
       def get_correction( params )
         LastFM.get( "#{TYPE}.getCorrection", params )
@@ -26,7 +26,7 @@ module LastFM
       #
       # @option params [String,  required unless :mbid] :artist           the artist name
       # @option params [String,  optional]              :mbid             the musicbrainz id for the artist
-      # @option params [Boolean, optional]              :festivalsonly    whether only festivals should be returned, or all events.
+      # @option params [Boolean, optional]              :festivalsonly    whether only festivals should be returned, or all events
       # @option params [Boolean, optional]              :autocorrect      transform misspelled artist names into correct artist names to be returned in the response
       # @option params [Fixnum,  optional]              :page             the page number to fetch. defaults to first page
       # @option params [Fixnum,  optional]              :limit            the number of results to fetch per page. defaults to 50
@@ -35,7 +35,7 @@ module LastFM
         LastFM.get( "#{TYPE}.getEvents", params )
       end
 
-      # Get images for this artist in a variety of sizes
+      # Get images for this artist in a variety of sizes.
       #
       # @option params [String,  required unless :mbid] :artist         the artist name
       # @option params [String,  optional]              :mbid           the musicbrainz id for the artist
@@ -72,7 +72,7 @@ module LastFM
         LastFM.get( "#{TYPE}.getPastEvents", params )
       end
 
-      # Get a podcast of free mp3s based on an artist
+      # Get a podcast of free mp3s based on an artist.
       #
       # @option params [String,  required unless :mbid] :artist         the artist name
       # @option params [String,  optional]              :mbid           the musicbrainz id for the artist
@@ -195,7 +195,7 @@ module LastFM
         LastFM.post( "#{TYPE}.share", params )
       end
 
-      # Shout in this artist's shoutbox
+      # Shout in this artist's shoutbox.
       #
       # @option params [String, required] :artist     name of the artist to shout on
       # @option params [String, required] :message    message to post to the shoutbox
