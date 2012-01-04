@@ -50,7 +50,7 @@ module LastFM
       def get_tags( params )
         secure = !params.include?(:user)
         LastFM.requires_authentication if secure
-        LastFM.post( "#{TYPE}.getTags", params )
+        LastFM.post( "#{TYPE}.getTags", params, secure )
       end
 
       # @see http://www.last.fm/api/show?service=312
