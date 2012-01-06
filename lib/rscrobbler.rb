@@ -158,7 +158,8 @@ module LastFM
     # @param [String] str  the string (or symbol) to camel case
     # @return [String] the camelcased version of the given string
     def camel_case(key)
-      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL', speed_multiplier: 'speed_multiplier'}
+      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL',
+        speed_multiplier: 'speed_multiplier', fingerprint_id: 'fingerprintid'}
       return exceptions[key] if exceptions.include?(key)
       camel = key.to_s.split('_').map{|s| s.capitalize}.join
       camel[0].downcase + camel[1..-1]

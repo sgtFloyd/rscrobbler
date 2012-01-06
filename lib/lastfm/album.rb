@@ -101,11 +101,11 @@ module LastFM
 
       # Share an album with one or more Last.fm users or other friends.
       #
-      # @option params [String,  required] :artist    the artist name
-      # @option params [String,  required] :album     the album name
-      # @option params [Array,   required] :recipient a list of email addresses or Last.fm usernames. maximum is 10
-      # @option params [String,  optional] :message   an optional message to send. if not supplied a default message will be used
-      # @option params [Boolean, optional] :public    optionally show in the sharing users activity feed. defaults to false
+      # @option params [String,  required] :artist      the artist name
+      # @option params [String,  required] :album       the album name
+      # @option params [Array,   required] :recipient   a list of email addresses or Last.fm usernames. maximum is 10
+      # @option params [String,  optional] :message     an optional message to send. if not supplied a default message will be used
+      # @option params [Boolean, optional] :public      optionally show in the sharing users activity feed. defaults to false
       # @see http://www.last.fm/api/show?service=436
       def share( params )
         LastFM.requires_authentication
