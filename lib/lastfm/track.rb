@@ -171,10 +171,17 @@ module LastFM
       # @option params [String,  optional]              :context          sub-client version (not public, only enabled for certain api keys)
       # @see http://www.last.fm/api/show?service=443
       def scrobble( params )
-        LastFM.requires_authentication
-        # TODO: convert single objects or arrays to batch notation
         # TODO: Accept Time objects for :timestamp
-        LastFM.post( "#{TYPE}.scrobble", params )
+        LastFM.requires_authentication
+        # Tracks are passed to the service using array notation for each of the
+        # above params, up to a maximum of 50 scrobbles per batch [0<=i<=49].
+        array_params = {}
+        params.each do |hkey, hval|
+          Array(hval).each_with_index do |aval, index|
+            array_params["#{hkey}[#{index}]"] = aval
+          end
+        end
+        LastFM.post( "#{TYPE}.scrobble", array_params )
       end
 
       # Search for a track by track name. Returns track matches sorted by relevance.
