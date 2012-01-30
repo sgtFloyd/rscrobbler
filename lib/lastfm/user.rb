@@ -10,12 +10,11 @@ module LastFM
       #
       # @option params [String, required] :user             last.fm username to fetch the recent tracks for
       # @option params [String, required] :artist           the artist name to fetch tracks for
-      # @option params [String, optional] :startTimestamp   a unix timestamp to start at
-      # @option params [String, optional] :endTimestamp     a unix timestamp to end at
+      # @option params [Time,   optional] :startTimestamp   a unix timestamp to start at
+      # @option params [Time,   optional] :endTimestamp     a unix timestamp to end at
       # @option params [Fixnum, optional] :page             the page number to fetch. defaults to first page
       # @see http://www.last.fm/api/show?service=432
       def get_artist_tracks( params )
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getArtistTracks", params )
       end
 
@@ -133,13 +132,12 @@ module LastFM
       # the user is currently listening.
       #
       # @option params [String, required] :user     last.fm username
-      # @option params [String, optional] :from     display scrobbles after this time, formatted as unix UTC integer timestamp
-      # @option params [String, optional] :to       display scrobbles before this time, formatted as unix UTC integer timestamp
+      # @option params [Time,   optional] :from     display scrobbles after this time, formatted as unix UTC integer timestamp
+      # @option params [Time,   optional] :to       display scrobbles before this time, formatted as unix UTC integer timestamp
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=278
       def get_recent_tracks( params )
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getRecentTracks", params )
       end
 

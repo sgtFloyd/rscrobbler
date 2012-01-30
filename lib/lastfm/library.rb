@@ -92,11 +92,10 @@ module LastFM
       #
       # @option params [String, required] :artist       the artist that composed the album
       # @option params [String, required] :track        the name of the track to remove
-      # @option params [String, required] :timestamp    the unix timestamp of the scrobble to remove
+      # @option params [Time,   required] :timestamp    the unix timestamp of the scrobble to remove
       # @see http://www.last.fm/api/show?service=525
       def remove_scrobble( params )
         LastFM.requires_authentication
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.post( "#{TYPE}.removeScrobble", params )
       end
 

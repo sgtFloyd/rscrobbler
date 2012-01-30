@@ -161,7 +161,7 @@ module LastFM
       # @option params [String,  required unless :mbid] :artist           artist name
       # @option params [String,  required unless :mbid] :track            track name
       # @option params [String,  optional]              :mbid             the musicbrainz id for the track
-      # @option params [Fixnum,  optional]              :timestamp        times the track started playing, in unix timestamp format
+      # @option params [Time,    optional]              :timestamp        time the track started playing
       # @option params [String,  optional]              :album            album name
       # @option params [String,  optional]              :album_artist     album artist, if this differend from the track artist
       # @option params [Fixnum,  optional]              :track_number     track number of the track on the album
@@ -171,7 +171,6 @@ module LastFM
       # @option params [String,  optional]              :context          sub-client version (not public, only enabled for certain api keys)
       # @see http://www.last.fm/api/show?service=443
       def scrobble( params )
-        # TODO: Accept Time objects for :timestamp
         LastFM.requires_authentication
         # Tracks are passed to the service using array notation for each of the above params
         array_params = {}

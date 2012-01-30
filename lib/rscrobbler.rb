@@ -143,6 +143,7 @@ module LastFM
       params = params.each_with_object({}) do |(k,v), h|
         v = v ? 1 : 0 if !!v == v                 # convert booleans into 0 or 1
         v = v.compact.join(',') if v.is_a?(Array) # convert arrays into comma-separated strings
+        v = v.to_i if v.is_a?(Time)               # convert times into integer unix timestamps
         h[camel_case(k)] = v.to_s unless v.nil?
       end
       params['method'] = method

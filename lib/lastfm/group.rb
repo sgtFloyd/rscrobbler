@@ -26,11 +26,10 @@ module LastFM
       # is supplied, return the most recent.
       #
       # @option params [String, required] :group    the last.fm group name
-      # @option params [String, optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
-      # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=293
       def get_weekly_album_chart( params )
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyAlbumChart", params )
       end
 
@@ -38,11 +37,10 @@ module LastFM
       # is supplied, return the most recent.
       #
       # @option params [String, required] :group    the last.fm group name
-      # @option params [String, optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
-      # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=294
       def get_weekly_artist_chart( params )
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyArtistChart", params )
       end
 
@@ -59,11 +57,10 @@ module LastFM
       # is supplied, return the most recent.
       #
       # @option params [String, required] :group    the last.fm group name
-      # @option params [String, optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
-      # @option params [String, optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :from     date at which the chart should start from (see: Group.get_weekly_chart_list)
+      # @option params [Time,   optional] :to       date at which the chart should end on (see: Group.get_weekly_chart_list)
       # @see http://www.last.fm/api/show/?service=296
       def get_weekly_track_chart( params )
-        # TODO: accept Time objects and convert to unix timestamp
         LastFM.get( "#{TYPE}.getWeeklyTrackChart", params )
       end
 
