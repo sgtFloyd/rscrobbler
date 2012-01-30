@@ -173,8 +173,7 @@ module LastFM
       def scrobble( params )
         # TODO: Accept Time objects for :timestamp
         LastFM.requires_authentication
-        # Tracks are passed to the service using array notation for each of the
-        # above params, up to a maximum of 50 scrobbles per batch [0<=i<=49].
+        # Tracks are passed to the service using array notation for each of the above params
         array_params = {}
         params.each do |hkey, hval|
           Array(hval).each_with_index do |aval, index|

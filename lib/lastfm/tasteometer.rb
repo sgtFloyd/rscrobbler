@@ -21,7 +21,7 @@ module LastFM
       # in the comparison and a small amount of metadata about each. Can take the
       # list of users from a group, or a users friends.
       #
-      # @option params [String, required] :source             what source we're using for the comparison (accepted sources are 'user' and 'group')
+      # @option params [String, required] :source             what source we're using for the comparison. accepted sources are 'user' and 'group'
       # @option params [String, required] :value              name of the source we're using. should be either a Last.fm username or group name
       # @option params [Float,  optional] :cutoff             the minimum level over which comparisons should be returned. default is 0.2
       # @option params [Fixnum, optional] :connection_limit   the maximum number of connections each user should have. default is 6
