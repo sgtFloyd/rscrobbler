@@ -19,11 +19,11 @@ Configure the library with your LastFM credentials:
       session.api_key    = (see: www.last.fm/api/account)
       session.api_secret = (see: www.last.fm/api/account)
       session.username   = (last.fm username)
-      session.auth_token = (generated auth token)
+      session.auth_token = (auth token from generate_lastfm_auth_token)
     end
 
 Once authenticated, call API methods using the following syntax:
 
-```LastFM::Track.scrobble('Bonfire', 'Childish Gambino', Time.now.to_i)```
+```LastFM::Track.scrobble( artist:'Childish Gambino', track:'Bonfire', timestamp:Time.now )```
 
-See [documentation](http://rubydoc.info/gems/rscrobbler) for detailed parameter information.
+See [documentation](http://rubydoc.info/gems/rscrobbler/frames) for detailed method and parameter information.

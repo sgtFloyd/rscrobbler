@@ -4,37 +4,66 @@ module LastFM
 
       TYPE = 'event'
 
+      # Set a user's attendance status for an event.
+      #
+      # @option params [Fixnum, required] :event    numeric last.fm event id
+      # @option params [Symbol, required] :status   attendance status. accepted values are :attending, :maybe_attending, and :not_attending
       # @see http://www.last.fm/api/show?service=307
-      def attend( event, status )
+      def attend( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.attend", 'event'=>event, 'status'=>status )
+        status_codes = { attending: 0, maybe_attending: 1, not_attending: 2 }
+        params[:status] = status_codes[params[:status]] if params.include?(:status)
+        LastFM.post( "#{TYPE}.attend", params )
       end
-    
+
+      # Get a list of attendees for an event.
+      #
+      # @option params [Fixnum, required] :event    numeric last.fm event id
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=391
-      def get_attendees( event, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getAttendees", !:secure, 'event'=>event, 'limit'=>limit, 'page'=>page )
+      def get_attendees( params )
+        LastFM.get( "#{TYPE}.getAttendees", params )
       end
-    
+
+      # Get the metadata for an event on Last.fm. Includes attendance and lineup information.
+      #
+      # @option params [Fixnum, required] :event    numeric last.fm event id
       # @see http://www.last.fm/api/show?service=292
-      def get_info( event )
-        LastFM.get( "#{TYPE}.getInfo", !:secure, 'event'=>event )
+      def get_info( params )
+        LastFM.get( "#{TYPE}.getInfo", params )
       end
-    
+
+      # Get shouts for an event.
+      #
+      # @option params [Fixnum, required] :event    numeric last.fm event id
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=399
-      def get_shouts( event, limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getShouts", !:secure, 'event'=>event, 'limit'=>limit, 'page'=>page )
+      def get_shouts( params )
+        LastFM.get( "#{TYPE}.getShouts", params )
       end
-    
+
+      # Share an event with one or more Last.fm users or other friends.
+      #
+      # @option params [Fixnum,  required] :event       numeric last.fm event id
+      # @option params [Array,   required] :recipient   a list of email addresses or Last.fm usernames. maximum is 10
+      # @option params [String,  optional] :message     an optional message to send. if not supplied a default message will be used
+      # @option params [Boolean, optional] :public      optionally show in the sharing users activity feed. defaults to false
       # @see http://www.last.fm/api/show?service=350
-      def share( event, recipient, message = nil, public = nil )
+      def share( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.share", 'event'=>event, 'recipient'=>recipient, 'public'=>public, 'message'=>message )
+        LastFM.post( "#{TYPE}.share", params )
       end
-    
+
+      # Shout in an event's shoutbox.
+      #
+      # @option params [Fixnum, required] :event      numeric last.fm event id
+      # @option params [String, required] :message    message to post to the shoutbox
       # @see http://www.last.fm/api/show?service=409
-      def shout( event, message )
+      def shout( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.shout", 'event'=>event, 'message'=>message )
+        LastFM.post( "#{TYPE}.shout", params )
       end
 
     end

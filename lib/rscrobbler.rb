@@ -22,7 +22,7 @@ require 'lastfm/user'
 require 'lastfm/venue'
 
 module LastFM
-  VERSION = '0.0.6'
+  VERSION = '0.1.0'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
@@ -36,7 +36,7 @@ module LastFM
     # Configure the module and begin a session. Once established (and successfully
     # executed), the module is ready to send api calls to Last.fm.
     #
-    # Expected usage:
+    # @example
     #     LastFM.establish_session do |session|
     #       session.username = ...
     #       session.auth_token = ...
@@ -62,7 +62,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      self.session_key = Auth.get_mobile_session( username, auth_token ).find_first('session/key').content
+      self.session_key = Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
@@ -90,14 +90,14 @@ module LastFM
     # Construct an HTTP GET call from params, and load the response into a LibXML Document.
     #
     # @param [String] method  last.fm api method to call
-    # @param [optional, Boolean] secure  whether sign the request with a method signature and session key
+    # @param [Boolean] secure  whether to sign the request with a method signature and session key
     #   (one exception being auth methods, which require a method signature but no session key)
     # @param [Hash] params  parameters to send, excluding method, api_key, api_sig, and sk
     # @return [LibXML::XML::Document] xml document of the data contained in the response
     # @raise [LastFMError] if the request fails
-    def get( method, secure = false, params = {} )
+    def get( method, params = {}, secure = false )
       path = generate_path(method, secure, params)
-      logger.debug( "Last.fm HTTP GET: #{HOST+path}" ) if logger
+      logger.debug( "Last.fm HTTP GET: #{HOST}#{path}" ) if logger
       response = Net::HTTP.get_response( HOST, path )
       validate( LibXML::XML::Parser.string( response.body ).parse )
     end
@@ -129,8 +129,10 @@ module LastFM
       xml
     end
 
-    # Normalize the parameter list by converting values to a string and removing any nils. Add method,
-    # api key, session key, and api signature parameters where necessary.
+    # Normalize the parameter list by converting boolean values to 0 or 1, array values to
+    # comma-separated strings, and all other values to a string. Remove any nil values, and
+    # camel-case the parameter keys. Add method, api key, session key, and api signature
+    # parameters where necessary.
     #
     # @param [String] method  last.fm api method
     # @param [Boolean] secure  whether to include session key and api signature in the parameters
@@ -138,13 +140,30 @@ module LastFM
     # @return [Hash] complete, normalized parameters
     # @private
     def construct_params( method, secure, params )
-      params.delete_if{|k,v| v.nil? }
-      params.each{|k,v| params[k] = params[k].to_s }
+      params = params.each_with_object({}) do |(k,v), h|
+        v = v ? 1 : 0 if !!v == v                 # convert booleans into 0 or 1
+        v = v.compact.join(',') if v.is_a?(Array) # convert arrays into comma-separated strings
+        v = v.to_i if v.is_a?(Time)               # convert times into integer unix timestamps
+        h[camel_case(k)] = v.to_s unless v.nil?
+      end
       params['method'] = method
       params['api_key'] = api_key
       params['sk'] = session_key if authenticated? && secure
       params['api_sig'] = generate_method_signature( params ) if secure
       params
+    end
+
+    # Return a the camelCased version of the given string or symbol, with underscores removed,
+    # word capitalized, and the first letter lower case.
+    #
+    # @param [String] str  the string (or symbol) to camel case
+    # @return [String] the camelcased version of the given string
+    def camel_case(key)
+      exceptions = {playlist_id: 'playlistID', playlist_url: 'playlistURL',
+        speed_multiplier: 'speed_multiplier', fingerprint_id: 'fingerprintid'}
+      return exceptions[key] if exceptions.include?(key)
+      camel = key.to_s.split('_').map{|s| s.capitalize}.join
+      camel[0].downcase + camel[1..-1]
     end
 
     # Generate the path for a particular method call given params.

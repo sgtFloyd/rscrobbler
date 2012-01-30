@@ -4,34 +4,58 @@ module LastFM
 
       TYPE = 'chart'
 
+      # Get the hyped artists chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=493
-      def get_hyped_artists( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getHypedArtists", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_hyped_artists( params )
+        LastFM.get( "#{TYPE}.getHypedArtists", params )
       end
-    
+
+      # Get the hyped tracks chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=494
-      def get_hyped_tracks( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getHypedTracks", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_hyped_tracks( params )
+        LastFM.get( "#{TYPE}.getHypedTracks", params )
       end
-    
+
+      # Get the most loved tracks chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=495
-      def get_loved_tracks( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getLovedTracks", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_loved_tracks( params )
+        LastFM.get( "#{TYPE}.getLovedTracks", params )
       end
-    
+
+      # Get the top artists chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=496
-      def get_top_artists( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopArtists", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_top_artists( params )
+        LastFM.get( "#{TYPE}.getTopArtists", params )
       end
-    
+
+      # Get the top tags chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=497
-      def get_top_tags( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopTags", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_top_tags( params )
+        LastFM.get( "#{TYPE}.getTopTags", params )
       end
-    
+
+      # Get the top tracks chart
+      #
+      # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
+      # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=498
-      def get_top_tracks( limit = nil, page = nil )
-        LastFM.get( "#{TYPE}.getTopTracks", !:secure, 'limit'=>limit, 'page'=>page )
+      def get_top_tracks( params )
+        LastFM.get( "#{TYPE}.getTopTracks", params )
       end
 
     end
