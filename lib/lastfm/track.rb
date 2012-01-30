@@ -175,6 +175,7 @@ module LastFM
         # Tracks are passed to the service using array notation for each of the above params
         array_params = {}
         params.each do |hkey, hval|
+          hval = hval.to_i if hval.is_a?(Time)
           Array(hval).each_with_index do |aval, index|
             array_params["#{hkey}[#{index}]"] = aval
           end
