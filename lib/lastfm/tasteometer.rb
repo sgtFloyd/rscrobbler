@@ -12,7 +12,8 @@ module LastFM
       # @option params [Fixnum, optional] :limit    how many shared artists to display. default is 5
       # @see http://www.last.fm/api/show?service=258
       def compare( params )
-        #TODO: convert types and artists to type[i] and artist[i]
+        Array(params.delete(:types)).each_with_index{|val, i| params["type[#{i}]"] = val}
+        Array(params.delete(:values)).each_with_index{|val, i| params["value[#{i}]"] = val}
         LastFM.get( "#{TYPE}.compare", params )
       end
 

@@ -11,7 +11,9 @@ module LastFM
       # @see http://www.last.fm/api/show?service=370
       def add_album( params )
         LastFM.requires_authentication
-        # TODO: convert :artists and :albums to artists[i], albums[i]
+        # convert :artists and :albums to individual artist[i] and album[i]
+        Array(params.delete(:artists)).each_with_index{|val, i| params["artist[#{i}]"] = val}
+        Array(params.delete(:albums)).each_with_index{|val, i| params["album[#{i}]"] = val}
         LastFM.post( "#{TYPE}.addAlbum", params )
       end
 
@@ -21,7 +23,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=371
       def add_artist( params )
         LastFM.requires_authentication
-        # TODO: convert :artists to artists[i]
+        Array(params.delete(:artists)).each_with_index{|val, i| params["artist[#{i}]"] = val}
         LastFM.post( "#{TYPE}.addArtist", params )
       end
 
@@ -32,7 +34,8 @@ module LastFM
       # @see http://www.last.fm/api/show?service=372
       def add_track( params )
         LastFM.requires_authentication
-        # TODO: convert :artists and :tracks to artists[i], tracks[i]
+        Array(params.delete(:artists)).each_with_index{|val, i| params["artist[#{i}]"] = val}
+        Array(params.delete(:tracks)).each_with_index{|val, i| params["track[#{i}]"] = val}
         LastFM.post( "#{TYPE}.addTrack", params )
       end
 
