@@ -1,8 +1,57 @@
 module LastFM
-  class Album
-    class << self
 
+  # @attr [String] name         Album title
+  # @attr [String] artist       Album artist name
+  # @attr [Fixnum] id           Last.fm ID
+  # @attr [String] mbid         MusicBrainz ID
+  # @attr [String] url          Last.fm album url
+  # @attr [Time]   releasedate  Album release date
+  # @attr [Hash]   images       Album images in :small, :medium, :large, :extralarge, and :mega sizes
+  # @attr [Fixnum] listeners    Listener count at the time of creation
+  # @attr [Fixnum] playcount    Total album playcount at the time of creation
+  # @attr [Array]  tracks       Album tracks as a collection of LastFM::Track objects
+  # @attr [Array]  tags         Album tags as a collection of LastFM::Tag objects
+  # @attr [Wiki]   wiki         Album information as a LastFM::Wiki object
+  class Album < Struct.new(:name, :artist, :id, :mbid, :url, :releasedate, :images, :listeners, :playcount, :tracks, :tags, :wiki)
+    class << self
       TYPE = 'album'
+
+      # Construct a LastFM::Album object from given XML, using as many attributes as possible.
+      #
+      # @param [LibXML::XML::Document] xml  XML obtained from a Last.fm API call
+      # @return [LastFM::Album] object contructed from attributes contained in XML
+      def from_xml(xml)
+        attributes = {}
+
+        # String attributes don't need to be modified
+        [:name, :artist, :mbid, :url].each{ |field|
+          node = xml.find_first("#{TYPE}/#{field}")
+          attributes[field] = node.content if node
+        }
+
+        # Fixnum attributes need to be explicitly cast
+        [:id, :listeners, :playcount].each{ |field|
+          node = xml.find_first("#{TYPE}/#{field}")
+          attributes[field] = node.content.to_i if node
+        }
+
+        # Parse releasedate with Time
+        date_node = xml.find_first("#{TYPE}/releasedate")
+        attributes[:releasedate] = Time.parse(date_node.content) if date_node
+
+        # Collect images with their sizes
+        images = {}
+        xml.find("#{TYPE}/image").each{ |image|
+          size = image.attributes[:size]
+          images[size.to_sym] = image.content
+        }
+        attributes[:images] = images
+
+        wiki_node = xml.find_first("#{TYPE}/wiki")
+        attributes[:wiki] = LastFM::Wiki.from_node(wiki_node) if wiki_node
+
+        self.new(attributes)
+      end
 
       # Tag an album using a list of user supplied tags.
       #
@@ -37,7 +86,8 @@ module LastFM
       # @option params [String,  optional]              :username       username whose playcount for this album is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        LastFM.get( "#{TYPE}.getInfo", params )
+        xml = LastFM.get( "#{TYPE}.getInfo", params )
+        LastFM::Album.from_xml(xml)
       end
 
       # Get shouts for an album.

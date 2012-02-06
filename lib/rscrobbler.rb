@@ -1,9 +1,12 @@
 require 'digest/md5'
 require 'libxml'
 require 'net/http'
+require 'time'
 require 'uri'
 
 $:.unshift(File.dirname(__FILE__))
+
+require 'lastfm/struct'
 
 require 'lastfm/album'
 require 'lastfm/artist'
@@ -20,6 +23,7 @@ require 'lastfm/tasteometer'
 require 'lastfm/track'
 require 'lastfm/user'
 require 'lastfm/venue'
+require 'lastfm/wiki'
 
 module LastFM
   VERSION = '0.1.0'
