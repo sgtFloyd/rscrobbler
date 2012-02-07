@@ -24,15 +24,16 @@ module LastFM
       def attr_from_node(node)
         attr = node.name.to_sym
         case attr
-          #when :artist
-          #  { attr => LastFM::Artist.from_node(node) }
-          when :artist, :album, :mbid, :name, :url
+          when :name
+            { :name => node.content.to_s,
+              :rank => node.doc.root['rank'] }
+          when :artist, :album, :mbid, :url
             { attr => node.content.to_s }
           when :duration, :id, :listeners, :playcount
             { attr => node.content.to_i }
           when :streamable
             { :streamable => (node.content.to_s == '1'),
-              :streamable_fulltrack => ( node['fulltrack'].to_s == '1') }
+              :streamable_fulltrack => (node['fulltrack'].to_s == '1') }
           when :releasedate
             { :release_date => Time.parse(node.content.to_s) }
           when :toptags
