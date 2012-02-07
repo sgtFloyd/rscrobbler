@@ -19,10 +19,6 @@ module LastFM
       # Rules on identifying XML nodes as belonging to an attribute, and
       # how to convert its contents to meaningful data.
       #
-      # @example
-      #   attr_from_node(<artist>Pink Floyd</artist>)
-      #    => {artist: "Pink Floyd"}
-      #
       # @param [LibXML::XML::Node] node   XML node to inspect and convert
       # @return [Hash]  hash containing the associated attribute, and the node's converted contents
       def attr_from_node(node)
@@ -39,7 +35,11 @@ module LastFM
           when :image
             { :images => {node['size'].to_sym => node.content.to_s} }
           # TODO: when :tracks
-          # TODO: when :toptags
+          when :toptags
+            { :tags =>  node.children.map{ |tag|
+                          LastFM::Tag.from_node(tag) unless tag.empty?
+                        }.compact
+            }
           when :wiki
             { attr => LastFM::Wiki.from_node(node) }
           else
@@ -62,9 +62,9 @@ module LastFM
       #
       # @option params [String,  required unless :mbid] :artist         the artist name
       # @option params [String,  required unless :mbid] :album          the album name
+      # @option params [String,  required]              :country        a country name, as defined by ISO 3166-1
       # @option params [String,  optional]              :mbid           the musicbrainz id for the album
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
-      # @option params [String,  optional]              :country        a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
         LastFM.get( "#{package}.getBuylinks", params )
