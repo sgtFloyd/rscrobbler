@@ -1,18 +1,19 @@
 module LastFM
 
-  # @attr [String] name         Album title
-  # @attr [String] artist       Album artist name
-  # @attr [Fixnum] id           Last.fm ID
-  # @attr [String] mbid         MusicBrainz ID
-  # @attr [String] url          Last.fm album url
-  # @attr [Time]   release_date Album release date
-  # @attr [Hash]   images       Album images in :small, :medium, :large, :extralarge, and :mega sizes
-  # @attr [Fixnum] listeners    Listener count at the time of creation
-  # @attr [Fixnum] playcount    Total album playcount at the time of creation
-  # @attr [Array]  tracks       Album tracks as a collection of LastFM::Track objects
-  # @attr [Array]  tags         Album's top tags as a collection of LastFM::Tag objects
-  # @attr [Wiki]   wiki         Album information as a LastFM::Wiki object
-  class Album < Struct.new(:name, :artist, :id, :mbid, :url, :release_date, :images, :listeners, :playcount, :tracks, :tags, :wiki)
+  # @attr [String]  name          Album title
+  # @attr [String]  artist        Album artist name
+  # @attr [Fixnum]  id            Last.fm ID
+  # @attr [String]  mbid          MusicBrainz ID
+  # @attr [String]  url           Last.fm album url
+  # @attr [Time]    release_date  Album release date
+  # @attr [Hash]    images        Album images in :small, :medium, :large, :extralarge, and :mega sizes
+  # @attr [Fixnum]  listeners     Listener count at the time of creation
+  # @attr [Fixnum]  playcount     Total album playcount at the time of creation
+  # @attr [Array]   tracks        Album tracks as a collection of LastFM::Track objects
+  # @attr [Array]   tags          Album's top tags as a collection of LastFM::Tag objects
+  # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
+  # @attr [Boolean] streamable    Whether this album is streamable on Last.fm
+  class Album < Struct.new(:name, :artist, :id, :mbid, :url, :release_date, :images, :listeners, :playcount, :tracks, :tags, :wiki, :streamable)
     class << self
 
       # Rules on identifying XML nodes as belonging to an attribute, and
@@ -20,7 +21,7 @@ module LastFM
       #
       # @example
       #   attr_from_node(<artist>Pink Floyd</artist>)
-      #     returns {:artist => "Pink Floyd"}
+      #    => {artist: "Pink Floyd"}
       #
       # @param [LibXML::XML::Node] node   XML node to inspect and convert
       # @return [Hash]  hash containing the associated attribute, and the node's converted contents
@@ -72,6 +73,7 @@ module LastFM
       # @option params [String,  optional]              :lang           the language to return the biography in, expressed as an ISO 639 alpha-2 code
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @option params [String,  optional]              :username       username whose playcount for this album is to be returned in the reponse
+      # @return [LastFM::Album] album constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
         xml = LastFM.get( "#{TYPE}.getInfo", params )
