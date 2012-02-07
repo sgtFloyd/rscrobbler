@@ -17,7 +17,7 @@ module LastFM
     class << self
 
       # Rules on identifying XML nodes as belonging to an attribute, and
-      # how to convert it's contents to meaningful data.
+      # how to convert its contents to meaningful data.
       #
       # @example
       #   attr_from_node(<artist>Pink Floyd</artist>)
@@ -32,11 +32,16 @@ module LastFM
             { attr => node.content.to_s }
           when :id, :listeners, :playcount
             { attr => node.content.to_i }
+          when :streamable
+            { attr => (node.content.to_s == '1')}
           when :releasedate
             { :release_date => Time.parse(node.content.to_s) }
           when :image
             { :images => {node['size'].to_sym => node.content.to_s} }
-          # TODO: :tracks, :toptags, :wiki
+          # TODO: when :tracks
+          # TODO: when :toptags
+          when :wiki
+            { attr => LastFM::Wiki.from_node(node) }
           else
             {}
         end
@@ -50,7 +55,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=302
       def add_tags( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.addTags", params )
+        LastFM.post( "#{package}.addTags", params )
       end
 
       # Get a list of buy links for an album.
@@ -62,7 +67,7 @@ module LastFM
       # @option params [String,  optional]              :country        a country name, as defined by ISO 3166-1
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
-        LastFM.get( "#{TYPE}.getBuylinks", params )
+        LastFM.get( "#{package}.getBuylinks", params )
       end
 
       # Get the metadata for an album.
@@ -76,7 +81,7 @@ module LastFM
       # @return [LastFM::Album] album constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        xml = LastFM.get( "#{TYPE}.getInfo", params )
+        xml = LastFM.get( "#{package}.getInfo", params )
         LastFM::Album.from_xml(xml)
       end
 
@@ -90,7 +95,7 @@ module LastFM
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=450
       def get_shouts( params )
-        LastFM.get( "#{TYPE}.getShouts", params )
+        LastFM.get( "#{package}.getShouts", params )
       end
 
       # Get the tags applied by an individual user to an album.
@@ -104,7 +109,7 @@ module LastFM
       def get_tags( params )
         secure = !params.include?(:user)
         LastFM.requires_authentication if secure
-        LastFM.get( "#{TYPE}.getTags", params, secure )
+        LastFM.get( "#{package}.getTags", params, secure )
       end
 
       # Get the top tags for an album, ordered by popularity.
@@ -115,7 +120,7 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @see http://www.last.fm/api/show?service=438
       def get_top_tags( params )
-        LastFM.get( "#{TYPE}.getTopTags", params )
+        LastFM.get( "#{package}.getTopTags", params )
       end
 
       # Remove a user's tag from an album.
@@ -126,7 +131,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=314
       def remove_tag( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.removeTag", params )
+        LastFM.post( "#{package}.removeTag", params )
       end
 
       # Search for an album by name. Returns album matches sorted by relevance.
@@ -136,7 +141,7 @@ module LastFM
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=357
       def search( params )
-        LastFM.get( "#{TYPE}.search", params )
+        LastFM.get( "#{package}.search", params )
       end
 
       # Share an album with one or more Last.fm users or other friends.
@@ -149,7 +154,7 @@ module LastFM
       # @see http://www.last.fm/api/show?service=436
       def share( params )
         LastFM.requires_authentication
-        LastFM.post( "#{TYPE}.share", params )
+        LastFM.post( "#{package}.share", params )
       end
 
     end
