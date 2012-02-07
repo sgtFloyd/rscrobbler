@@ -1,19 +1,19 @@
 module LastFM
 
-  # @attr [String]  name          Album title
-  # @attr [String]  artist        Album artist name
+  # @attr [Artist]  artist        Album artist metadata
   # @attr [Fixnum]  id            Last.fm ID
-  # @attr [String]  mbid          MusicBrainz ID
-  # @attr [String]  url           Last.fm album url
-  # @attr [Time]    release_date  Album release date
   # @attr [Hash]    images        Album images in :small, :medium, :large, :extralarge, and :mega sizes
   # @attr [Fixnum]  listeners     Listener count at the time of creation
+  # @attr [String]  mbid          MusicBrainz ID
+  # @attr [String]  name          Album title
   # @attr [Fixnum]  playcount     Total album playcount at the time of creation
-  # @attr [Array]   tracks        Album tracks as a collection of LastFM::Track objects
-  # @attr [Array]   tags          Album's top tags as a collection of LastFM::Tag objects
-  # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
+  # @attr [Time]    release_date  Album release date
   # @attr [Boolean] streamable    Whether this album is streamable on Last.fm
-  class Album < Struct.new(:name, :artist, :id, :mbid, :url, :release_date, :images, :listeners, :playcount, :tracks, :tags, :wiki, :streamable)
+  # @attr [Array]   tags          Album's top tags as a collection of LastFM::Tag objects
+  # @attr [Array]   tracks        Album tracks as a collection of LastFM::Track objects
+  # @attr [String]  url           Last.fm album url
+  # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
+  class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
     class << self
 
       # Rules on identifying XML nodes as belonging to an attribute, and
@@ -24,7 +24,7 @@ module LastFM
       def attr_from_node(node)
         attr = node.name.to_sym
         case attr
-          when :name, :artist, :mbid, :url
+          when :artist, :name, :mbid, :url
             { attr => node.content.to_s }
           when :id, :listeners, :playcount
             { attr => node.content.to_i }
@@ -34,12 +34,14 @@ module LastFM
             { :release_date => Time.parse(node.content.to_s) }
           when :image
             { :images => {node['size'].to_sym => node.content.to_s} }
-          # TODO: when :tracks
+          when :tracks
+            { attr => node.children.map{|track|
+                        LastFM::Track.from_node(track) unless track.empty?
+                      }.compact }
           when :toptags
             { :tags =>  node.children.map{ |tag|
                           LastFM::Tag.from_node(tag) unless tag.empty?
-                        }.compact
-            }
+                        }.compact }
           when :wiki
             { attr => LastFM::Wiki.from_node(node) }
           else
