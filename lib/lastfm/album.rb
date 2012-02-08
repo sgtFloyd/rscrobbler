@@ -16,39 +16,6 @@ module LastFM
   class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
     class << self
 
-      # Rules on identifying XML nodes as belonging to an attribute, and
-      # how to convert its contents to meaningful data.
-      #
-      # @param [LibXML::XML::Node] node   XML node to inspect and convert
-      # @return [Hash]  hash containing the associated attribute, and the node's converted contents
-      def attr_from_node(node)
-        attr = node.name.to_sym
-        case attr
-          when :artist, :name, :mbid, :url
-            { attr => node.content.to_s }
-          when :id, :listeners, :playcount
-            { attr => node.content.to_i }
-          when :streamable
-            { attr => (node.content.to_s == '1')}
-          when :releasedate
-            { :release_date => Time.parse(node.content.to_s) }
-          when :image
-            { :images => {node['size'].to_sym => node.content.to_s} }
-          when :tracks
-            { attr => node.children.map{|track|
-                        LastFM::Track.from_node(track) unless track.empty?
-                      }.compact }
-          when :toptags
-            { :tags =>  node.children.map{ |tag|
-                          LastFM::Tag.from_node(tag) unless tag.empty?
-                        }.compact }
-          when :wiki
-            { attr => LastFM::Wiki.from_node(node) }
-          else
-            {}
-        end
-      end
-
       # Tag an album using a list of user supplied tags.
       #
       # @option params [String, required] :artist the artist name

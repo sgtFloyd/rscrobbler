@@ -10,27 +10,6 @@ module LastFM
   class Tag < Struct.new(:name, :count, :url, :reach, :taggings, :streamable, :wiki)
     class << self
 
-      # Rules on identifying XML nodes as belonging to an attribute, and
-      # how to convert its contents to meaningful data.
-      #
-      # @param [LibXML::XML::Node] node   XML node to inspect and convert
-      # @return [Hash]  hash containing the associated attribute, and the node's converted contents
-      def attr_from_node(node)
-        attr = node.name.to_sym
-        case attr
-          when :name, :url
-            { attr => node.content.to_s }
-          when :count, :reach, :taggings
-            { attr => node.content.to_i }
-          when :streamable
-            { attr => (node.content.to_s == '1')}
-          when :wiki
-            { attr => LastFM::Wiki.from_node(node) }
-          else
-            {}
-        end
-      end
-
       # Get the metadata for a tag.
       #
       # @option params [String, required] :tag    the tag name

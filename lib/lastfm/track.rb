@@ -8,42 +8,13 @@ module LastFM
   # @attr [String]  mbid
   # @attr [String]  name
   # @attr [Fixnum]  playcount
-  # @attr [Fixnum]  rank
+  # @attr [Fixnum]  position
   # @attr [Boolean] streamable
   # @attr [Boolean] streamable_fulltrack
   # @attr [Array]   tags
   # @attr [String]  url
-  class Track < Struct.new(:album, :artist, :duration, :id, :listeners, :mbid, :name, :playcount, :rank, :streamable, :streamable_fulltrack, :tags, :url)
+  class Track < Struct.new(:album, :artist, :duration, :id, :listeners, :mbid, :name, :playcount, :position, :streamable, :streamable_fulltrack, :tags, :url)
     class << self
-
-      # Rules on identifying XML nodes as belonging to an attribute, and
-      # how to convert its contents to meaningful data.
-      #
-      # @param [LibXML::XML::Node] node   XML node to inspect and convert
-      # @return [Hash]  hash containing the associated attribute, and the node's converted contents
-      def attr_from_node(node)
-        attr = node.name.to_sym
-        case attr
-          when :name
-            { :name => node.content.to_s,
-              :rank => node.doc.root['rank'] }
-          when :artist, :album, :mbid, :url
-            { attr => node.content.to_s }
-          when :duration, :id, :listeners, :playcount
-            { attr => node.content.to_i }
-          when :streamable
-            { :streamable => (node.content.to_s == '1'),
-              :streamable_fulltrack => (node['fulltrack'].to_s == '1') }
-          when :releasedate
-            { :release_date => Time.parse(node.content.to_s) }
-          when :toptags
-            { :tags =>  node.children.map{ |tag|
-                          LastFM::Tag.from_node(tag) unless tag.empty?
-                        }.compact }
-          else
-            {}
-        end
-      end
 
       # Add a list of user supplied tags to a track.
       #
@@ -108,7 +79,8 @@ module LastFM
       # @option params [String,  optional]              :username       username whose playcount for, and whether they've loved, this track is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=356
       def get_info( params )
-        LastFM.get( "#{package}.getInfo", params )
+        xml = LastFM.get( "#{package}.getInfo", params )
+        LastFM::Track.from_xml(xml)
       end
 
       # Get shouts for a track.

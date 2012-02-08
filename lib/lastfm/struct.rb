@@ -22,23 +22,7 @@ module LastFM
     # @param [LibXML::XML::Document] xml  XML obtained from a Last.fm API call
     # @return [LastFM::Struct] object contructed from attributes contained in XML
     def self.from_xml(xml)
-      raise NotImplementedError unless self.respond_to?(:attr_from_node)
-      attributes = {}
-      xml.find("//#{self.package}/*").each do |node|
-        new_attr = self.attr_from_node(node)
-        # recursively merge hash attributes one level deep. Rails' Hash#deep_merge! would be handy
-        attributes.merge!(new_attr){|k,ov,nv| ov.is_a?(Hash) ? ov.merge(nv) : nv}
-      end
-      self.new(attributes)
-    end
-
-    # Convert an XML node to a parsed XML doc for use with from_xml.
-    #
-    # @param [LibXML::XML::Node] node   XML node to convert to an XML document
-    # @return [LastFM::Struct] the result passing the parsed node to from_xml.
-    def self.from_node(node)
-      xml_doc = LibXML::XML::Parser.string(node.to_s).parse
-      self.from_xml(xml_doc)
+      # construct LastFM:: objects from an XML document using class-specific rules
     end
 
   end
