@@ -21,8 +21,12 @@ module LastFM
     #
     # @param [LibXML::XML::Document] xml  XML obtained from a Last.fm API call
     # @return [LastFM::Struct] object contructed from attributes contained in XML
-    def self.from_xml(xml)
-      # construct LastFM:: objects from an XML document using class-specific rules
+    def self.from_xml(xml, initial_attributes={})
+      # standardize document structure by setting root to the node expected by this object
+      xml.root = xml.find_first(package) if xml.root.name == 'lfm'
+      model = self.new(initial_attributes)
+      xml.root.each{|child| model.update_from_node(child)}
+      model
     end
 
   end

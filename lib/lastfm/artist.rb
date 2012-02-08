@@ -67,8 +67,7 @@ module LastFM
       # @return [LastFM::Artist] artist constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show/?service=267
       def get_info( params )
-        xml = LastFM.get( "#{package}.getInfo", params )
-        LastFM::Artist.from_xml(xml)
+        LastFM.get( "#{package}.getInfo", params )
       end
 
       # Get a paginated list of all the events this artist has played at in the past.

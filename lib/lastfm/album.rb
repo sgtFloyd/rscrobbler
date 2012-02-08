@@ -14,6 +14,21 @@ module LastFM
   # @attr [String]  url           Last.fm album url
   # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
   class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
+
+    def update_from_node(node)
+      case node.name.to_sym
+        when :name
+          self.name = node.content
+        when :mbid
+          self.mbid = node.content
+        when :url
+          self.url = node.content
+        when :image
+          self.images ||= {}
+          self.images.merge({node['size'] => node.content})
+      end
+    end
+
     class << self
 
       # Tag an album using a list of user supplied tags.
@@ -50,8 +65,7 @@ module LastFM
       # @return [LastFM::Album] album constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        xml = LastFM.get( "#{package}.getInfo", params )
-        LastFM::Album.from_xml(xml)
+        LastFM.get( "#{package}.getInfo", params )
       end
 
       # Get shouts for an album.

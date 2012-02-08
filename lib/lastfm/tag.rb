@@ -16,8 +16,7 @@ module LastFM
       # @option params [String, optional] :lang   the language to return the summary in, expressed as an ISO 639 alpha-2 code
       # @see http://www.last.fm/api/show?service=452
       def get_info( params )
-        xml = LastFM.get( "#{package}.getInfo", params )
-        LastFM::Tag.from_xml(xml)
+        LastFM.get( "#{package}.getInfo", params )
       end
 
       # Search for tags similar to this one. Returns tags ranked by similarity, based on listening data.

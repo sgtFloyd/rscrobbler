@@ -79,8 +79,7 @@ module LastFM
       # @option params [String,  optional]              :username       username whose playcount for, and whether they've loved, this track is to be returned in the reponse
       # @see http://www.last.fm/api/show?service=356
       def get_info( params )
-        xml = LastFM.get( "#{package}.getInfo", params )
-        LastFM::Track.from_xml(xml)
+        LastFM.get( "#{package}.getInfo", params )
       end
 
       # Get shouts for a track.
