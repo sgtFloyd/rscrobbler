@@ -4,8 +4,17 @@ module LastFM
   # @attr [String] summary    Short summary of the information in this entry
   # @attr [String] content    Full content of this entry
   class Wiki < Struct.new(:published, :summary, :content)
-    class << self
 
+    def update_from_node(node)
+      case node.name.to_sym
+        when :published
+          self.published = Time.parse(node.content)
+        when :summary #TODO: Remove CDATA wrapper
+          self.summary = node.content
+        when :content #TODO: Remove CDATA wrapper
+          self.content = node.content
+      end
     end
+
   end
 end

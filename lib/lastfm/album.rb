@@ -19,13 +19,29 @@ module LastFM
       case node.name.to_sym
         when :name
           self.name = node.content
+        when :artist
+          self.artist = node.content
+        when :id
+          self.id = node.content.to_i
         when :mbid
           self.mbid = node.content
         when :url
           self.url = node.content
+        when :releasedate
+          self.release_date = Time.parse(node.content)
         when :image
           self.images ||= {}
           self.images.merge({node['size'] => node.content})
+        when :listeners
+          self.listeners = node.content.to_i
+        when :playcount
+          self.playcount = node.content.to_i
+        when :tracks
+          self.tracks = node.find('track').map{|t| LastFM::Track.from_xml(t)}
+        when :toptags
+          self.tags = node.find('tag').map{|t| LastFM::Tag.from_xml(t)}
+        when :wiki
+          self.wiki = LastFM::Wiki.from_xml(node)
       end
     end
 
