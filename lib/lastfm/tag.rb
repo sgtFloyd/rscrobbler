@@ -4,10 +4,9 @@ module LastFM
   # @attr [Fixnum] count
   # @attr [String] url
   # @attr [Fixnum] reach
-  # @attr [Fixnum] taggings
   # @attr [Boolean] streamable
   # @attr [LastFM::Wiki] wiki
-  class Tag < Struct.new(:name, :count, :url, :reach, :taggings, :streamable, :wiki)
+  class Tag < Struct.new(:name, :count, :url, :reach, :streamable, :wiki)
 
     def update_from_node(node)
       case node.name.to_sym
@@ -15,6 +14,14 @@ module LastFM
           self.name = node.content
         when :url
           self.url = node.content
+        when :reach
+          self.reach = node.content.to_i
+        when :count, :taggings
+          self.count = node.content.to_i
+        when :streamable
+          self.streamable = (node.content == '1')
+        when :wiki
+          self.wiki = LastFM::Wiki.from_xml(node)
       end
     end
 
@@ -24,9 +31,11 @@ module LastFM
       #
       # @option params [String, required] :tag    the tag name
       # @option params [String, optional] :lang   the language to return the summary in, expressed as an ISO 639 alpha-2 code
+      # @return [LastFM::Tag] tag constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show?service=452
       def get_info( params )
-        LastFM.get( "#{package}.getInfo", params )
+        xml = LastFM.get( "#{package}.getInfo", params )
+        LastFM::Tag.from_xml( xml )
       end
 
       # Search for tags similar to this one. Returns tags ranked by similarity, based on listening data.
@@ -102,7 +111,10 @@ module LastFM
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=273
       def search( params )
-        LastFM.get( "#{package}.search", params )
+        xml = LastFM.get( "#{package}.search", params )
+        xml.find('results/tagmatches/tag').map do |tag|
+          LastFM::Tag.from_xml( tag )
+        end
       end
 
     end
