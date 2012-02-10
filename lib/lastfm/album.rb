@@ -8,11 +8,12 @@ module LastFM
   # @attr [String] name  Album title
   # @attr [Fixnum] playcount  Total album playcount at the time of creation
   # @attr [Time] release_date  Album release date
+  # @attr [Boolean] streamable
   # @attr [Array] tags  Album's top tags as a collection of LastFM::Tag objects
   # @attr [Array] tracks  Album tracks as a collection of LastFM::Track objects
   # @attr [String] url  Last.fm album url
   # @attr [LastFM::Wiki] wiki  Album information as a LastFM::Wiki object
-  class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :tags, :tracks, :url, :wiki)
+  class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
 
     def update_from_node(node)
       case node.name.to_sym
@@ -35,6 +36,8 @@ module LastFM
           self.listeners = node.content.to_i
         when :playcount
           self.playcount = node.content.to_i
+        when :streamable
+          self.streamable = (node.content == '1')
         when :tracks
           self.tracks = node.find('track').map do |track|
             LastFM::Track.from_xml(track, :position => track['rank'].to_i)
@@ -144,7 +147,10 @@ module LastFM
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=357
       def search( params )
-        LastFM.get( "#{package}.search", params )
+        xml = LastFM.get( "#{package}.search", params )
+        xml.find('results/albummatches/album').map do |album|
+          LastFM::Album.from_xml( album )
+        end
       end
 
       # Share an album with one or more Last.fm users or other friends.

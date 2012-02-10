@@ -1,7 +1,7 @@
 module LastFM
 
   # @attr [LastFM::Album] album
-  # @attr [LastFM::Artist]  artist
+  # @attr [LastFM::Artist, String] artist
   # @attr [Fixnum] duration
   # @attr [Fixnum] id
   # @attr [Fixnum] listeners
@@ -36,7 +36,13 @@ module LastFM
           self.streamable = (node.content == '1')
           self.streamable_fulltrack = (node['fulltrack'] == '1')
         when :artist
-          self.artist = LastFM::Artist.from_xml(node)
+          # node containing only artist name
+          if node.find('*').count == 0
+            self.artist = node.content
+          # node containing nested artist attributes
+          else
+            self.artist = LastFM::Artist.from_xml(node)
+          end
         when :album
           self.position = node['position'].to_i
           self.album = LastFM::Album.from_xml(node)
@@ -240,7 +246,10 @@ module LastFM
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @see http://www.last.fm/api/show?service=286
       def search( params )
-        LastFM.get( "#{package}.search", params )
+        xml = LastFM.get( "#{package}.search", params )
+        xml.find('results/trackmatches/track').map do |track|
+          LastFM::Track.from_xml( track )
+        end
       end
 
       # Share a track twith one or more Last.fm users or other friends.

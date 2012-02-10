@@ -25,9 +25,12 @@ module LastFM
           self.images.merge!({node['size'].to_sym => node.content})
         when :streamable
           self.streamable = (node.content == '1')
-        when :stats
-          self.listeners = node.find_first('listeners').content.to_i rescue self.listeners
-          self.playcount = node.find_first('playcount').content.to_i rescue self.playcount
+        when :listeners
+          self.listeners = node.content.to_i
+        when :playcount
+          self.playcount = node.content.to_i
+        when :stats # nested listeners and playcount
+          node.find('*').each{|child| self.update_from_node(child)}
         when :similar
           self.similar = node.find('artist').map do |artist|
             LastFM::Artist.from_xml(artist)
@@ -221,7 +224,10 @@ module LastFM
       # @option params [String, required] :artist   the artist name
       # @see http://www.last.fm/api/show/?service=272
       def search( params )
-        LastFM.get( "#{package}.search", params )
+        xml = LastFM.get( "#{package}.search", params )
+        xml.find('results/artistmatches/artist').map do |artist|
+          LastFM::Artist.from_xml( artist )
+        end
       end
 
       # Share an artist with Last.fm users or other friends.
