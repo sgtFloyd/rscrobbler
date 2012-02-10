@@ -1,12 +1,12 @@
 module LastFM
 
-  # @attr [String]  name
-  # @attr [Fixnum]  count
-  # @attr [String]  url
-  # @attr [Fixnum]  reach
-  # @attr [Fixnum]  taggings
+  # @attr [String] name
+  # @attr [Fixnum] count
+  # @attr [String] url
+  # @attr [Fixnum] reach
+  # @attr [Fixnum] taggings
   # @attr [Boolean] streamable
-  # @attr [Wiki]    wiki
+  # @attr [LastFM::Wiki] wiki
   class Tag < Struct.new(:name, :count, :url, :reach, :taggings, :streamable, :wiki)
 
     def update_from_node(node)

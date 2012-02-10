@@ -1,22 +1,22 @@
 module LastFM
 
-  # @attr [Artist]  artist        Album artist metadata
-  # @attr [Fixnum]  id            Last.fm ID
-  # @attr [Hash]    images        Album images in :small, :medium, :large, :extralarge, and :mega sizes
-  # @attr [Fixnum]  listeners     Listener count at the time of creation
-  # @attr [String]  mbid          MusicBrainz ID
-  # @attr [String]  name          Album title
-  # @attr [Fixnum]  playcount     Total album playcount at the time of creation
-  # @attr [Time]    release_date  Album release date
-  # @attr [Array]   tags          Album's top tags as a collection of LastFM::Tag objects
-  # @attr [Array]   tracks        Album tracks as a collection of LastFM::Track objects
-  # @attr [String]  url           Last.fm album url
-  # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
+  # @attr [LastFM::Artist] artist  Album artist metadata
+  # @attr [Fixnum] id  Last.fm ID
+  # @attr [Hash] images  Album images in :small, :medium, :large, :extralarge, and :mega sizes
+  # @attr [Fixnum] listeners  Listener count at the time of creation
+  # @attr [String] mbid  MusicBrainz ID
+  # @attr [String] name  Album title
+  # @attr [Fixnum] playcount  Total album playcount at the time of creation
+  # @attr [Time] release_date  Album release date
+  # @attr [Array] tags  Album's top tags as a collection of LastFM::Tag objects
+  # @attr [Array] tracks  Album tracks as a collection of LastFM::Track objects
+  # @attr [String] url  Last.fm album url
+  # @attr [LastFM::Wiki] wiki  Album information as a LastFM::Wiki object
   class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :tags, :tracks, :url, :wiki)
 
     def update_from_node(node)
       case node.name.to_sym
-        when :name
+        when :name, :title
           self.name = node.content
         when :artist
           self.artist = node.content
@@ -37,7 +37,7 @@ module LastFM
           self.playcount = node.content.to_i
         when :tracks
           self.tracks = node.find('track').map do |track|
-            LastFM::Track.from_xml(track, :position => track['rank'])
+            LastFM::Track.from_xml(track, :position => track['rank'].to_i)
           end
         when :toptags
           self.tags = node.find('tag').map do |tag|
