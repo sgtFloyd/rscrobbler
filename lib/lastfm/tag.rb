@@ -68,9 +68,13 @@ module LastFM
 
       # Fetches the top global tags on Last.fm, sorted by popularity (number of times used).
       #
+      # @return [Array<LastFM::Tag>] list of tags ordered by popularity
       # @see http://www.last.fm/api/show?service=276
       def get_top_tags
-        LastFM.get( "#{package}.getTopTags" )
+        xml = LastFM.get( "#{package}.getTopTags" )
+        xml.find('toptags/tag').map do |tag|
+          LastFM::Tag.from_xml( tag )
+        end
       end
 
       # Get the top tracks tagged with a tag, ordered by tag count.
@@ -109,6 +113,7 @@ module LastFM
       # @option params [String, required] :tag      the tag name
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Tag>] list of tags sorted by relevance
       # @see http://www.last.fm/api/show?service=273
       def search( params )
         xml = LastFM.get( "#{package}.search", params )

@@ -1,18 +1,18 @@
 module LastFM
 
-  # @attr [LastFM::Artist] artist  Album artist metadata
-  # @attr [Fixnum] id  Last.fm ID
-  # @attr [Hash] images  Album images in :small, :medium, :large, :extralarge, and :mega sizes
-  # @attr [Fixnum] listeners  Listener count at the time of creation
-  # @attr [String] mbid  MusicBrainz ID
-  # @attr [String] name  Album title
-  # @attr [Fixnum] playcount  Total album playcount at the time of creation
-  # @attr [Time] release_date  Album release date
+  # @attr [LastFM::Artist] artist
+  # @attr [Fixnum] id
+  # @attr [Hash] images
+  # @attr [Fixnum] listeners
+  # @attr [String] mbid
+  # @attr [String] name
+  # @attr [Fixnum] playcount
+  # @attr [Time] release_date
   # @attr [Boolean] streamable
-  # @attr [Array] tags  Album's top tags as a collection of LastFM::Tag objects
-  # @attr [Array] tracks  Album tracks as a collection of LastFM::Track objects
-  # @attr [String] url  Last.fm album url
-  # @attr [LastFM::Wiki] wiki  Album information as a LastFM::Wiki object
+  # @attr [Array<LastFM::Tag>] tags
+  # @attr [Array<LastFM::Track>] tracks
+  # @attr [String] url
+  # @attr [LastFM::Wiki] wiki
   class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
 
     def update_from_node(node)
@@ -124,9 +124,13 @@ module LastFM
       # @option params [String,  required unless :mbid] :album          the album name
       # @option params [String,  optional]              :mbid           the musicbrainz id for the album
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
+      # @return [Array<LastFM::Tag>] list of tags sorted by popularity
       # @see http://www.last.fm/api/show?service=438
       def get_top_tags( params )
-        LastFM.get( "#{package}.getTopTags", params )
+        xml = LastFM.get( "#{package}.getTopTags", params )
+        xml.find('toptags/tag').map do |tag|
+          LastFM::Tag.from_xml( tag )
+        end
       end
 
       # Remove a user's tag from an album.
@@ -145,6 +149,7 @@ module LastFM
       # @option params [String, required] :album    the album name
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Album>] list of albums sorted by relevance
       # @see http://www.last.fm/api/show?service=357
       def search( params )
         xml = LastFM.get( "#{package}.search", params )

@@ -190,9 +190,13 @@ module LastFM
       # @option params [String,  required unless :mbid] :artist         the artist name
       # @option params [String,  optional]              :mbid           the musicbrainz id for the artist
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
+      # @return [Array<LastFM::Tag>] list of tags ordered by popularity
       # @see http://www.last.fm/api/show/?service=288
       def get_top_tags( params )
-        LastFM.get( "#{package}.getTopTags", params )
+        xml = LastFM.get( "#{package}.getTopTags", params )
+        xml.find('toptags/tag').map do |tag|
+          LastFM::Tag.from_xml( tag )
+        end
       end
 
       # Get the top tracks by an artist, ordered by popularity.
@@ -222,6 +226,7 @@ module LastFM
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
       # @option params [String, required] :artist   the artist name
+      # @return [Array<LastFM::Artist>] list of artists sorted by relevance
       # @see http://www.last.fm/api/show/?service=272
       def search( params )
         xml = LastFM.get( "#{package}.search", params )
