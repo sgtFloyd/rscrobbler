@@ -4,6 +4,7 @@ module LastFM
   # @attr [LastFM::Artist, String] artist
   # @attr [Fixnum] duration
   # @attr [Fixnum] id
+  # @attr [Hash] images
   # @attr [Fixnum] listeners
   # @attr [String] mbid
   # @attr [String] name
@@ -14,7 +15,7 @@ module LastFM
   # @attr [Array] tags
   # @attr [String] url
   # @attr [LastFM::Wii] wiki
-  class Track < Struct.new(:album, :artist, :duration, :id, :listeners, :mbid, :name, :playcount, :position, :streamable, :streamable_fulltrack, :tags, :url, :wiki)
+  class Track < Struct.new(:album, :artist, :duration, :id, :images, :listeners, :mbid, :name, :playcount, :position, :streamable, :streamable_fulltrack, :tags, :url, :wiki)
 
     def update_from_node(node)
       case node.name.to_sym
@@ -35,6 +36,9 @@ module LastFM
         when :streamable
           self.streamable = (node.content == '1')
           self.streamable_fulltrack = (node['fulltrack'] == '1')
+        when :image
+          self.images ||= {}
+          self.images.merge!({node['size'].to_sym => node.content})
         when :artist
           # node containing only artist name
           if node.find('*').count == 0
@@ -145,9 +149,13 @@ module LastFM
       # @option params [String,  optional]              :mbid           the musicbrainz id for the track
       # @option params [Boolean, optional]              :autocorrect    correct misspelled artist and track names to be returned in the response
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch. defaults to 50
+      # @return [Array<LastFM::Track>] similar tracks, ordered by similarity
       # @see http://www.last.fm/api/show?service=319
       def get_similar( params )
-        LastFM.get( "#{package}.getSimilar", params )
+        xml = LastFM.get( "#{package}.getSimilar", params )
+        xml.find('similartracks/track').map do |track|
+          LastFM::Track.from_xml( track )
+        end
       end
 
       # Get the tags on a track.

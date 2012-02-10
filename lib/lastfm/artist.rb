@@ -144,9 +144,13 @@ module LastFM
       # @option params [String,  optional]              :mbid           the musicbrainz id for the artist
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @option params [Fixnum,  optional]              :limit          limit the number of results to fetch
+      # @return [Array<LastFM::Artist>] list of similar artists
       # @see http://www.last.fm/api/show/?service=119
       def get_similar( params )
-        LastFM.get( "#{package}.getSimilar", params )
+        xml = LastFM.get( "#{package}.getSimilar", params )
+        xml.find('similarartists/artist').map do |artist|
+          LastFM::Artist.from_xml( artist )
+        end
       end
 
       # Get the tags applied by an individual user to an artist on Last.fm. If accessed as an authenticated service
@@ -170,9 +174,13 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @option params [Fixnum,  optional]              :page           the page number to fetch. defaults to first page
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Album>] top albums, ordered by popularity
       # @see http://www.last.fm/api/show/?service=287
       def get_top_albums( params )
-        LastFM.get( "#{package}.getTopAlbums", params )
+        xml = LastFM.get( "#{package}.getTopAlbums", params )
+        xml.find('topalbums/album').map do |album|
+          LastFM::Album.from_xml( album )
+        end
       end
 
       # Get the top fans for an artist on Last.fm, based on listening data.
@@ -206,9 +214,13 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @option params [Fixnum,  optional]              :page           the page number to fetch. defaults to first page
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Track>] top tracks, ordered by popularity
       # @see http://www.last.fm/api/show/?service=277
       def get_top_tracks( params )
-        LastFM.get( "#{package}.getTopTracks", params )
+        xml = LastFM.get( "#{package}.getTopTracks", params )
+        xml.find('toptracks/track').map do |track|
+          LastFM::Track.from_xml( track )
+        end
       end
 
       # Remove a user's tag from an artist.

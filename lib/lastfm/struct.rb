@@ -30,5 +30,10 @@ module LastFM
       model
     end
 
+    def to_s
+      return self.name if self.members.include? :name
+      super
+    end
+
   end
 end

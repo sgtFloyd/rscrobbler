@@ -41,9 +41,13 @@ module LastFM
       # Search for tags similar to this one. Returns tags ranked by similarity, based on listening data.
       #
       # @option params [String, required] tag   the tag name
+      # @return [Array<LastFM::Tag>] similar tags, ordered by similarity
       # @see http://www.last.fm/api/show?service=311
       def get_similar( params )
-        LastFM.get( "#{package}.getSimilar", params )
+        xml = LastFM.get( "#{package}.getSimilar", params )
+        xml.find('similartags/tag').map do |tag|
+          LastFM::Tag.from_xml( tag )
+        end
       end
 
       # Get the top albums tagged with a tag, ordered by tag count.
@@ -51,9 +55,13 @@ module LastFM
       # @option params [String, required] :tag      the tag name
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
+      # @return [Array[LastFM::Album]] list of albums, ordered by tag count
       # @see http://www.last.fm/api/show?service=283
       def get_top_albums( params )
-        LastFM.get( "#{package}.getTopAlbums", params )
+        xml = LastFM.get( "#{package}.getTopAlbums", params )
+        xml.find('topalbums/album').map do |album|
+          LastFM::Album.from_xml( album )
+        end
       end
 
       # Get the top artists tagged with a tag, ordered by tag count.
@@ -61,9 +69,13 @@ module LastFM
       # @option params [String, required] :tag      the tag name
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
+      # @return [Array[LastFM::Artist]] list of artists, ordered by tag count
       # @see http://www.last.fm/api/show?service=284
       def get_top_artists( params )
-        LastFM.get( "#{package}.getTopArtists", params )
+        xml = LastFM.get( "#{package}.getTopArtists", params )
+        xml.find('topartists/artist').map do |artist|
+          LastFM::Artist.from_xml( artist )
+        end
       end
 
       # Fetches the top global tags on Last.fm, sorted by popularity (number of times used).
@@ -82,9 +94,13 @@ module LastFM
       # @option params [String, required] :tag      the tag name
       # @option params [Fixnum, optional] :page     the page number to fetch. defaults to first page
       # @option params [Fixnum, optional] :limit    the number of results to fetch per page. defaults to 50
+      # @return [Array[LastFM::Track]] list of tracks, ordered by tag count
       # @see http://www.last.fm/api/show?service=285
       def get_top_tracks( params )
-        LastFM.get( "#{package}.getTopTracks", params )
+        xml = LastFM.get( "#{package}.getTopTracks", params )
+        xml.find('toptracks/track').map do |track|
+          LastFM::Track.from_xml( track )
+        end
       end
 
       # Get an artist chart for a tag, for a given date range. If no date range is

@@ -1,6 +1,6 @@
 module LastFM
 
-  # @attr [LastFM::Artist] artist
+  # @attr [LastFM::Artist, String] artist
   # @attr [Fixnum] id
   # @attr [Hash] images
   # @attr [Fixnum] listeners
@@ -20,7 +20,13 @@ module LastFM
         when :name, :title
           self.name = node.content
         when :artist
-          self.artist = node.content
+          # node containing only artist name
+          if node.find('*').count == 0
+            self.artist = node.content
+          # node containing nested artist attributes
+          else
+            self.artist = LastFM::Artist.from_xml(node)
+          end
         when :id
           self.id = node.content.to_i
         when :mbid
@@ -40,7 +46,7 @@ module LastFM
           self.streamable = (node.content == '1')
         when :tracks
           self.tracks = node.find('track').map do |track|
-            LastFM::Track.from_xml(track, :position => track['rank'].to_i)
+            LastFM::Track.from_xml(track, :album => self.name, :position => track['rank'].to_i)
           end
         when :toptags
           self.tags = node.find('tag').map do |tag|
