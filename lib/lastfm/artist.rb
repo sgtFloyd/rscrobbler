@@ -11,6 +11,18 @@ module LastFM
   # @attr [String]  url
   # @attr [LastFM::Wiki] wiki
   class Artist < Struct.new(:images, :listeners, :mbid, :name, :playcount, :similar, :streamable, :tags, :url, :wiki)
+
+    def update_from_node(node)
+      case node.name.to_sym
+        when :name
+          self.name = node.content
+        when :mbid
+          self.mbid = node.content
+        when :url
+          self.url = node.content
+      end
+    end
+
     class << self
 
       # Tag an artist with one or more user supplied tags.

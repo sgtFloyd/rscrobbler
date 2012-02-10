@@ -8,12 +8,11 @@ module LastFM
   # @attr [String]  name          Album title
   # @attr [Fixnum]  playcount     Total album playcount at the time of creation
   # @attr [Time]    release_date  Album release date
-  # @attr [Boolean] streamable    Whether this album is streamable on Last.fm
   # @attr [Array]   tags          Album's top tags as a collection of LastFM::Tag objects
   # @attr [Array]   tracks        Album tracks as a collection of LastFM::Track objects
   # @attr [String]  url           Last.fm album url
   # @attr [Wiki]    wiki          Album information as a LastFM::Wiki object
-  class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :streamable, :tags, :tracks, :url, :wiki)
+  class Album < Struct.new(:artist, :id, :images, :listeners, :mbid, :name, :playcount, :release_date, :tags, :tracks, :url, :wiki)
 
     def update_from_node(node)
       case node.name.to_sym
@@ -31,15 +30,19 @@ module LastFM
           self.release_date = Time.parse(node.content)
         when :image
           self.images ||= {}
-          self.images.merge({node['size'] => node.content})
+          self.images.merge!({node['size'].to_sym => node.content})
         when :listeners
           self.listeners = node.content.to_i
         when :playcount
           self.playcount = node.content.to_i
         when :tracks
-          self.tracks = node.find('track').map{|t| LastFM::Track.from_xml(t)}
+          self.tracks = node.find('track').map do |track|
+            LastFM::Track.from_xml(track, :position => track['rank'])
+          end
         when :toptags
-          self.tags = node.find('tag').map{|t| LastFM::Tag.from_xml(t)}
+          self.tags = node.find('tag').map do |tag|
+            LastFM::Tag.from_xml(tag)
+          end
         when :wiki
           self.wiki = LastFM::Wiki.from_xml(node)
       end
@@ -81,7 +84,8 @@ module LastFM
       # @return [LastFM::Album] album constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show?service=290
       def get_info( params )
-        LastFM.get( "#{package}.getInfo", params )
+        xml = LastFM.get( "#{package}.getInfo", params )
+        LastFM::Album.from_xml( xml )
       end
 
       # Get shouts for an album.

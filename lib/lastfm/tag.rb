@@ -8,6 +8,16 @@ module LastFM
   # @attr [Boolean] streamable
   # @attr [Wiki]    wiki
   class Tag < Struct.new(:name, :count, :url, :reach, :taggings, :streamable, :wiki)
+
+    def update_from_node(node)
+      case node.name.to_sym
+        when :name
+          self.name = node.content
+        when :url
+          self.url = node.content
+      end
+    end
+
     class << self
 
       # Get the metadata for a tag.

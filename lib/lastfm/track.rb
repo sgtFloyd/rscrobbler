@@ -14,6 +14,25 @@ module LastFM
   # @attr [Array]   tags
   # @attr [String]  url
   class Track < Struct.new(:album, :artist, :duration, :id, :listeners, :mbid, :name, :playcount, :position, :streamable, :streamable_fulltrack, :tags, :url)
+
+    def update_from_node(node)
+      case node.name.to_sym
+        when :name
+          self.name = node.content
+        when :duration
+          self.duration = node.content.to_i
+        when :mbid
+          self.mbid = node.content
+        when :url
+          self.url = node.content
+        when :streamable
+          self.streamable = (node.content == '1')
+          self.streamable_fulltrack = (node['fulltrack'] == '1')
+        when :artist
+          self.artist = LastFM::Artist.from_xml(node)
+      end
+    end
+
     class << self
 
       # Add a list of user supplied tags to a track.

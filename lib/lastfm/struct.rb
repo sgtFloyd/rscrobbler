@@ -23,7 +23,7 @@ module LastFM
     # @param [Hash] initial_attributes  Attributes to set before parsing the XML
     # @return [LastFM::Struct] object contructed from attributes contained in XML
     def self.from_xml(xml, initial_attributes={})
-      raise NotImplementedError unless self.respond_to?(:update_from_node)
+      raise NotImplementedError unless self.method_defined?(:update_from_node)
       xml = xml.find_first(package) if xml.is_a?(LibXML::XML::Document)
       model = self.new(initial_attributes)
       xml.find('*').each{|child| model.update_from_node(child)}
