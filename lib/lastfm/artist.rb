@@ -20,6 +20,24 @@ module LastFM
           self.mbid = node.content
         when :url
           self.url = node.content
+        when :image
+          self.images ||= {}
+          self.images.merge!({node['size'].to_sym => node.content})
+        when :streamable
+          self.streamable = (node.content == '1')
+        when :stats
+          self.listeners = node.find_first('listeners').content.to_i rescue self.listeners
+          self.playcount = node.find_first('playcount').content.to_i rescue self.playcount
+        when :similar
+          self.similar = node.find('artist').map do |artist|
+            LastFM::Artist.from_xml(artist)
+          end
+        when :tags
+          self.tags = node.find('tag').map do |tag|
+            LastFM::Tag.from_xml(tag)
+          end
+        when :bio
+          self.wiki = LastFM::Wiki.from_xml(node)
       end
     end
 
@@ -79,7 +97,8 @@ module LastFM
       # @return [LastFM::Artist] artist constructed from the metadata contained in the response
       # @see http://www.last.fm/api/show/?service=267
       def get_info( params )
-        LastFM.get( "#{package}.getInfo", params )
+        xml = LastFM.get( "#{package}.getInfo", params )
+        LastFM::Artist.from_xml( xml )
       end
 
       # Get a paginated list of all the events this artist has played at in the past.
