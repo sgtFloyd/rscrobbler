@@ -133,9 +133,13 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
       # @option params [Fixnum,  optional]              :page           the page number to fetch. defaults to first page
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Shout>] collection of shouts
       # @see http://www.last.fm/api/show/?service=397
       def get_shouts( params )
-        LastFM.get( "#{package}.getShouts", params )
+        xml = LastFM.get( "#{package}.getShouts", params )
+        xml.find('shouts/shout').map do |shout|
+          LastFM::Shout.from_xml( shout )
+        end
       end
 
       # Get all the artists similar to this artist.

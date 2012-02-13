@@ -80,13 +80,13 @@ module LastFM
       #
       # @option params [String,  required unless :mbid] :artist         the artist name
       # @option params [String,  required unless :mbid] :track          the track name
+      # @option params [String,  required]              :country        a country name, as defined by ISO 3166-1
       # @option params [String,  optional]              :mbid           the musicbrainz id for the track
       # @option params [Boolean, optional]              :autocorrect    correct misspelled artist and track names to be returned in the response
-      # @option params [String,  optional]              :country        a country name, as defined by ISO 3166-1
       # @return [Array<LastFM::Buylink>] collection of links where this track can be bought or downloaded
       # @see http://www.last.fm/api/show?service=431
       def get_buylinks( params )
-        LastFM.get( "#{package}.getBuylinks", params )
+        xml = LastFM.get( "#{package}.getBuylinks", params )
         [:physical, :download].each_with_object([]) do |type, buylinks|
           xml.find("affiliations/#{type}s/affiliation").each do |buylink|
             buylinks << LastFM::Buylink.from_xml( buylink, :type => type )
@@ -137,9 +137,13 @@ module LastFM
       # @option params [Boolean, optional]              :autocorrect    correct misspelled artist and track names to be returned in the response
       # @option params [Fixnum,  optional]              :page           the page number to fetch. defaults to first page
       # @option params [Fixnum,  optional]              :limit          the number of results to fetch per page. defaults to 50
+      # @return [Array<LastFM::Shout>] collection of shouts
       # @see http://www.last.fm/api/show?service=453
       def get_shouts( params )
-        LastFM.get( "#{package}.getShouts", params )
+        xml = LastFM.get( "#{package}.getShouts", params )
+        xml.find('shouts/shout').map do |shout|
+          LastFM::Shout.from_xml( shout )
+        end
       end
 
       # Get similar tracks for a track on Last.fm, based on listening data.
