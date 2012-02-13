@@ -75,7 +75,10 @@ module LastFM
         def get_tags( params )
           secure = !params.include?(:user)
           LastFM.requires_authentication if secure
-          LastFM.get( "album.getTags", params, secure )
+          xml = LastFM.get( "album.getTags", params, secure )
+          xml.find('tags/tag').map do |tag|
+            LastFM::Tag.from_xml( tag )
+          end
         end
 
         # Get the top tags for an album, ordered by popularity.

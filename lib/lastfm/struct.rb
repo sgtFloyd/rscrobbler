@@ -24,15 +24,10 @@ module LastFM
     # @return [LastFM::Struct] object contructed from attributes contained in XML
     def self.from_xml(xml, initial_attributes={})
       raise NotImplementedError unless self.method_defined?(:update_from_node)
-      xml = xml.find_first(package) if xml.is_a?(LibXML::XML::Document)
+      xml = xml.find_first(self.package) if xml.is_a?(LibXML::XML::Document)
       model = self.new(initial_attributes)
       xml.find('*').each{|child| model.update_from_node(child)}
       model
-    end
-
-    def to_s
-      return self.name if self.members.include? :name
-      super
     end
 
   end
