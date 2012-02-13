@@ -7,27 +7,32 @@ require 'uri'
 $:.unshift(File.dirname(__FILE__))
 
 require 'lastfm/struct'
-
 require 'lastfm/album'
 require 'lastfm/artist'
 require 'lastfm/buylink'
-require 'lastfm/auth'
-require 'lastfm/chart'
-require 'lastfm/event'
-require 'lastfm/geo'
-require 'lastfm/group'
-require 'lastfm/library'
-require 'lastfm/playlist'
-require 'lastfm/radio'
+require 'lastfm/shout'
 require 'lastfm/tag'
-require 'lastfm/tasteometer'
 require 'lastfm/track'
-require 'lastfm/user'
-require 'lastfm/venue'
 require 'lastfm/wiki'
 
+require 'lastfm/api/album'
+require 'lastfm/api/artist'
+require 'lastfm/api/auth'
+require 'lastfm/api/chart'
+require 'lastfm/api/event'
+require 'lastfm/api/geo'
+require 'lastfm/api/group'
+require 'lastfm/api/library'
+require 'lastfm/api/playlist'
+require 'lastfm/api/radio'
+require 'lastfm/api/tag'
+require 'lastfm/api/tasteometer'
+require 'lastfm/api/track'
+require 'lastfm/api/user'
+require 'lastfm/api/venue'
+
 module LastFM
-  VERSION = '0.1.0'
+  VERSION = '1.0.0'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
@@ -67,7 +72,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      self.session_key = Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
+      self.session_key = Api::Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
