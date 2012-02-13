@@ -10,6 +10,7 @@ require 'lastfm/struct'
 
 require 'lastfm/album'
 require 'lastfm/artist'
+require 'lastfm/buylink'
 require 'lastfm/auth'
 require 'lastfm/chart'
 require 'lastfm/event'

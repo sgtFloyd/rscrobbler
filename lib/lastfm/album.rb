@@ -20,13 +20,7 @@ module LastFM
         when :name, :title
           self.name = node.content
         when :artist
-          # node containing only artist name
-          if node.find('*').count == 0
-            self.artist = node.content
-          # node containing nested artist attributes
-          else
-            self.artist = LastFM::Artist.from_xml(node)
-          end
+          self.artist = (node.find('*').count == 0) ? node.content : LastFM::Artist.from_xml(node)
         when :id
           self.id = node.content.to_i
         when :mbid
@@ -77,9 +71,15 @@ module LastFM
       # @option params [String,  required]              :country        a country name, as defined by ISO 3166-1
       # @option params [String,  optional]              :mbid           the musicbrainz id for the album
       # @option params [Boolean, optional]              :autocorrect    transform misspelled artist names into correct artist names to be returned in the response
+      # @return [Array<LastFM::Buylink>] collection of links where this album can be bought or downloaded
       # @see http://www.last.fm/api/show?service=429
       def get_buylinks( params )
-        LastFM.get( "#{package}.getBuylinks", params )
+        xml = LastFM.get( "#{package}.getBuylinks", params )
+        [:physical, :download].each_with_object([]) do |type, buylinks|
+          xml.find("affiliations/#{type}s/affiliation").each do |buylink|
+            buylinks << LastFM::Buylink.from_xml( buylink, :type => type )
+          end
+        end
       end
 
       # Get the metadata for an album.

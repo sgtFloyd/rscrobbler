@@ -40,13 +40,7 @@ module LastFM
           self.images ||= {}
           self.images.merge!({node['size'].to_sym => node.content})
         when :artist
-          # node containing only artist name
-          if node.find('*').count == 0
-            self.artist = node.content
-          # node containing nested artist attributes
-          else
-            self.artist = LastFM::Artist.from_xml(node)
-          end
+          self.artist = (node.find('*').count == 0) ? node.content : LastFM::Artist.from_xml(node)
         when :album
           self.position = node['position'].to_i
           self.album = LastFM::Album.from_xml(node)
@@ -89,9 +83,15 @@ module LastFM
       # @option params [String,  optional]              :mbid           the musicbrainz id for the track
       # @option params [Boolean, optional]              :autocorrect    correct misspelled artist and track names to be returned in the response
       # @option params [String,  optional]              :country        a country name, as defined by ISO 3166-1
+      # @return [Array<LastFM::Buylink>] collection of links where this track can be bought or downloaded
       # @see http://www.last.fm/api/show?service=431
       def get_buylinks( params )
         LastFM.get( "#{package}.getBuylinks", params )
+        [:physical, :download].each_with_object([]) do |type, buylinks|
+          xml.find("affiliations/#{type}s/affiliation").each do |buylink|
+            buylinks << LastFM::Buylink.from_xml( buylink, :type => type )
+          end
+        end
       end
 
       # Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track
