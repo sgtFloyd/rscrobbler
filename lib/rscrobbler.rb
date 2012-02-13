@@ -7,12 +7,15 @@ require 'uri'
 $:.unshift(File.dirname(__FILE__))
 
 require 'lastfm/struct'
+
 require 'lastfm/album'
 require 'lastfm/artist'
 require 'lastfm/buylink'
+require 'lastfm/event'
 require 'lastfm/shout'
 require 'lastfm/tag'
 require 'lastfm/track'
+require 'lastfm/venue'
 require 'lastfm/wiki'
 
 require 'lastfm/api/album'

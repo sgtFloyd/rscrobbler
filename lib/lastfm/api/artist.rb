@@ -35,7 +35,10 @@ module LastFM
         # @option params [Fixnum,  optional]              :limit            the number of results to fetch per page. defaults to 50
         # @see http://www.last.fm/api/show/?service=117
         def get_events( params )
-          LastFM.get( "artist.getEvents", params )
+          xml = LastFM.get( "artist.getEvents", params )
+          xml.find('events/event').map do |event|
+            LastFM::Event.from_xml( event )
+          end
         end
 
         # Get images for this artist in a variety of sizes.
