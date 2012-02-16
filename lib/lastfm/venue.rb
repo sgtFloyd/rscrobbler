@@ -8,7 +8,7 @@ module LastFM
         when :name
           self.name = node.content
         when :location
-          # ???
+          # ??? city, country, street, postalcode, geo:lat, geo:long
         when :url
           self.url = node.content
         when :website
