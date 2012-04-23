@@ -35,7 +35,7 @@ require 'lastfm/api/user'
 require 'lastfm/api/venue'
 
 module LastFM
-  VERSION = '1.0.0'
+  VERSION = '0.2.0'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
