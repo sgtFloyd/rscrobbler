@@ -33,7 +33,7 @@ module LastFM
         when :venue
           self.venue = LastFM::Venue.from_xml( node )
         when :startDate
-          self.start_date = Time.parse(node.content)
+          self.start_date = Time.parse(node.content) rescue nil
         when :description
           self.description = node.content
         when :image

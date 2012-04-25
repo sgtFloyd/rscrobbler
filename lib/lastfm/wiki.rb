@@ -8,7 +8,7 @@ module LastFM
     def update_from_node(node)
       case node.name.to_sym
         when :published
-          self.published = Time.parse(node.content)
+          self.published = Time.parse(node.content) rescue nil
         when :summary #TODO: Remove CDATA wrapper
           self.summary = node.content
         when :content #TODO: Remove CDATA wrapper

@@ -28,7 +28,7 @@ module LastFM
         when :url
           self.url = node.content
         when :releasedate
-          self.release_date = Time.parse(node.content)
+          self.release_date = Time.parse(node.content) rescue nil
         when :image
           self.images ||= {}
           self.images.merge!({node['size'].to_sym => node.content})

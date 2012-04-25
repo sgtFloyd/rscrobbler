@@ -12,7 +12,7 @@ module LastFM
         when :body
           self.body = node.content
         when :date
-          self.date = Time.parse(node.content)
+          self.date = Time.parse(node.content) rescue nil
       end
     end
 
