@@ -30,5 +30,11 @@ module LastFM
       model
     end
 
+    def to_json(*a)
+      members.inject({}){|map, m|
+        map[m] = self[m]; map
+      }.to_json(*a)
+    end
+
   end
 end

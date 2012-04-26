@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'json'
 require 'libxml'
 require 'net/http'
 require 'time'
@@ -35,7 +36,7 @@ require 'lastfm/api/user'
 require 'lastfm/api/venue'
 
 module LastFM
-  VERSION = '0.2.1'
+  VERSION = '0.2.2'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
