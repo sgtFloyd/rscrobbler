@@ -7,33 +7,27 @@ require 'uri'
 
 $:.unshift(File.dirname(__FILE__))
 
-require 'lastfm/struct'
-
-require 'lastfm/album'
-require 'lastfm/artist'
-require 'lastfm/buylink'
-require 'lastfm/event'
-require 'lastfm/shout'
-require 'lastfm/tag'
-require 'lastfm/track'
-require 'lastfm/venue'
-require 'lastfm/wiki'
-
-require 'lastfm/api/album'
-require 'lastfm/api/artist'
-require 'lastfm/api/auth'
-require 'lastfm/api/chart'
-require 'lastfm/api/event'
-require 'lastfm/api/geo'
-require 'lastfm/api/group'
-require 'lastfm/api/library'
-require 'lastfm/api/playlist'
-require 'lastfm/api/radio'
-require 'lastfm/api/tag'
-require 'lastfm/api/tasteometer'
-require 'lastfm/api/track'
-require 'lastfm/api/user'
-require 'lastfm/api/venue'
+[
+  :struct,
+  :album,
+  :artist,
+  :auth,
+  :buylink,
+  :chart,
+  :event,
+  :geo,
+  :group,
+  :library,
+  :playlist,
+  :radio,
+  :shout,
+  :tag,
+  :tasteometer,
+  :track,
+  :user,
+  :venue,
+  :wiki
+].each{|model| require "lastfm/#{model}"}
 
 module LastFM
   VERSION = '0.2.2'
@@ -76,7 +70,7 @@ module LastFM
       [:api_key, :api_secret, :username, :auth_token].each do |cred|
         raise AuthenticationError, "Missing credential: #{cred}" unless LastFM.send(cred)
       end
-      self.session_key = Api::Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
+      self.session_key = Auth.get_mobile_session( username: username, auth_token: auth_token ).find_first('session/key').content
     end
 
     # Has the service been authenticated?
@@ -203,8 +197,7 @@ module LastFM
     # @see http://www.last.fm/api/authspec#8
     # @private
     def generate_method_signature( params )
-      str = ''
-      params.keys.sort.each do |key|
+      str = params.keys.sort.inject('') do |str, key|
         str << key << params[key]
       end
       Digest::MD5.hexdigest( str << api_secret )
