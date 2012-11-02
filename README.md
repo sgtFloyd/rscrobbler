@@ -14,13 +14,15 @@ Generate your Last.fm auth token:
 
 Configure the library with your LastFM credentials:
 
-    include 'rscrobbler'
-    LastFM.establish_session do |session|
-      session.api_key    = (see: www.last.fm/api/account)
-      session.api_secret = (see: www.last.fm/api/account)
-      session.username   = (last.fm username)
-      session.auth_token = (auth token from generate_lastfm_auth_token)
-    end
+```ruby
+include 'rscrobbler'
+LastFM.establish_session do |session|
+  session.api_key    = (see: www.last.fm/api/account)
+  session.api_secret = (see: www.last.fm/api/account)
+  session.username   = (last.fm username)
+  session.auth_token = (auth token from generate_lastfm_auth_token)
+end
+```
 
 Once authenticated, call API methods using the following syntax:
 
