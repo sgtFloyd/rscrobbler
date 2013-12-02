@@ -31,7 +31,7 @@ $:.unshift(File.dirname(__FILE__))
 ].each{|model| require "lastfm/#{model}"}
 
 module LastFM
-  VERSION = '0.3.0'
+  VERSION = '0.3.1'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'

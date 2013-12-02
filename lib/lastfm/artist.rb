@@ -10,7 +10,7 @@ module LastFM
   # @attr [Array] tags
   # @attr [String]  url
   # @attr [LastFM::Wiki] wiki
-  class Artist < Struct.new(:images, :listeners, :mbid, :name, :playcount, :similar, :streamable, :tags, :url, :wiki)
+  class Artist < Struct.new(:images, :listeners, :match, :mbid, :name, :playcount, :similar, :streamable, :tags, :url, :wiki)
 
     # API Methods
     class << self
