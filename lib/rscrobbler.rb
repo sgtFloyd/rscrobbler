@@ -1,3 +1,4 @@
+require 'cgi'
 require 'digest/md5'
 require 'json'
 require 'libxml'
@@ -30,7 +31,7 @@ $:.unshift(File.dirname(__FILE__))
 ].each{|model| require "lastfm/#{model}"}
 
 module LastFM
-  VERSION = '0.2.2'
+  VERSION = '0.2.3'
 
   HOST = 'ws.audioscrobbler.com'
   API_VERSION = '2.0'
@@ -92,7 +93,7 @@ module LastFM
     # @param [String] password  password to use
     # @return [String] md5 digest of the username and password
     def generate_auth_token( password )
-      self.auth_token = Digest::MD5.hexdigest( username.dup << Digest::MD5.hexdigest(password) )
+      self.auth_token = Digest::MD5.hexdigest( username + Digest::MD5.hexdigest(password) )
     end
 
     # Construct an HTTP GET call from params, and load the response into a LibXML Document.
@@ -184,10 +185,9 @@ module LastFM
     def generate_path( method, secure, params={} )
       params = construct_params( method, secure, params )
       url = "/#{API_VERSION}/?method=#{params.delete('method')}"
-      params.each do |key, value|
-        url << "&#{key}=#{value}"
+      params.inject(url) do |url, (key, value)|
+        url << "&#{key}=#{CGI.escape value}"
       end
-      URI.encode(url)
     end
 
     # Generate a method signature based on given parameters.
